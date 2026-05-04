@@ -1,0 +1,311 @@
+/* =============================================
+   PAREFFI — setting_akun.css
+   ============================================= */
+
+:root {
+  --primary: #1a1a2e;
+  --accent: #c9a84c;
+  --accent-light: #e8d5a3;
+  --bg: #f7f5f0;
+  --white: #ffffff;
+  --text: #2c2c2c;
+  --text-light: #888888;
+  --border: #e0ddd6;
+  --shadow: 0 2px 12px rgba(0,0,0,0.08);
+  --radius: 14px;
+  --error: #e63946;
+  --success: #2a9d8f;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding-bottom: 40px;
+}
+
+/* Dark mode */
+body.dark-mode {
+  --bg: #0f0f1a;
+  --white: #1a1a2e;
+  --text: #e8e8f0;
+  --text-light: #aaaacc;
+  --border: #2d2d4e;
+  --shadow: 0 2px 12px rgba(0,0,0,0.3);
+}
+
+/* =============================================
+   CONTAINER
+   ============================================= */
+.container {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 0 16px 32px;
+}
+
+.container h1 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: 1px;
+  background: var(--primary);
+  padding: 20px 16px;
+  margin: 0 -16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.container h1 i {
+  color: var(--accent);
+}
+
+/* =============================================
+   SECTION
+   ============================================= */
+section {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 18px 16px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+
+section h2 {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-light);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+
+section h2::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 28px;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+/* =============================================
+   LABEL & INPUT
+   ============================================= */
+label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  margin-bottom: 5px;
+  margin-top: 12px;
+}
+
+label:first-of-type { margin-top: 0; }
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"],
+select {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-size: 14px;
+  color: var(--text);
+  background: var(--bg);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  font-family: inherit;
+}
+
+input:focus,
+select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(201,168,76,0.15);
+  background: var(--white);
+}
+
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
+}
+
+/* =============================================
+   ERROR MESSAGE
+   ============================================= */
+.error-message {
+  font-size: 11px;
+  color: var(--error);
+  margin-top: 4px;
+  min-height: 14px;
+}
+
+/* =============================================
+   TOMBOL
+   ============================================= */
+button {
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+  border: none;
+  border-radius: 10px;
+}
+
+/* Simpan perubahan */
+#simpan-perubahan {
+  padding: 13px 24px;
+  background: var(--primary);
+  color: var(--white);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+#simpan-perubahan:hover {
+  background: var(--accent);
+  color: var(--primary);
+}
+
+#simpan-perubahan:disabled {
+  background: var(--border);
+  color: var(--text-light);
+  cursor: not-allowed;
+}
+
+/* Secondary buttons */
+.btn-secondary {
+  margin-top: 12px;
+  padding: 10px 18px;
+  background: var(--bg);
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 600;
+  border: 1.5px solid var(--border);
+  letter-spacing: 0.3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-secondary:hover {
+  background: var(--primary);
+  color: var(--white);
+  border-color: var(--primary);
+}
+
+/* Toggle tema */
+#toggle-theme {
+  padding: 10px 18px;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+  border: 1.5px solid var(--border);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#toggle-theme:hover {
+  background: var(--primary);
+  color: var(--white);
+  border-color: var(--primary);
+}
+
+/* Hapus akun */
+.btn-danger {
+  padding: 10px 18px;
+  background: rgba(230,57,70,0.08);
+  color: var(--error);
+  font-size: 13px;
+  font-weight: 600;
+  border: 1.5px solid rgba(230,57,70,0.3);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-danger:hover {
+  background: var(--error);
+  color: var(--white);
+  border-color: var(--error);
+}
+
+/* =============================================
+   BUTTON CONTAINER
+   ============================================= */
+.button-container {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+  align-items: center;
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 20px;
+  background: var(--bg);
+  color: var(--text-light);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.back-button:hover {
+  background: var(--border);
+  color: var(--text);
+}
+
+/* =============================================
+   DARK MODE OVERRIDES
+   ============================================= */
+body.dark-mode section {
+  background: var(--white);
+  border-color: var(--border);
+}
+
+body.dark-mode input,
+body.dark-mode select {
+  background: #0f0f1a;
+  color: var(--text);
+  border-color: var(--border);
+}
+
+body.dark-mode input:focus,
+body.dark-mode select:focus {
+  background: #1a1a2e;
+}
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+@media (max-width: 360px) {
+  .container { padding: 0 10px 28px; }
+  .container h1 { padding: 16px 10px; font-size: 16px; margin: 0 -10px 16px; }
+  section { padding: 14px 12px; }
+  .button-container { flex-direction: column; }
+  .back-button, #simpan-perubahan { width: 100%; justify-content: center; }
+}

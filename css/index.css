@@ -1,0 +1,632 @@
+/* =============================================
+   PAREFFI — index.css
+   ============================================= */
+
+:root {
+  --primary: #1a1a2e;
+  --accent: #c9a84c;
+  --accent-light: #e8d5a3;
+  --bg: #f7f5f0;
+  --white: #ffffff;
+  --text: #2c2c2c;
+  --text-light: #888888;
+  --border: #e0ddd6;
+  --shadow: 0 2px 12px rgba(0,0,0,0.08);
+  --radius: 12px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* =============================================
+   PAGE CONTAINER
+   ============================================= */
+.page-container {
+  max-width: 480px;
+  margin: 0 auto;
+  background: var(--white);
+  min-height: 100vh;
+  position: relative;
+  padding-bottom: 70px;
+}
+
+/* =============================================
+   STICKY HEADER
+   ============================================= */
+.sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--primary);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.header-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+}
+
+/* =============================================
+   PROFILE ICON
+   ============================================= */
+.profile-icon {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-shrink: 0;
+}
+
+.profile-icon a img {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--accent);
+}
+
+#usernameDisplay {
+  font-size: 12px;
+  color: var(--white);
+  font-weight: 600;
+  white-space: nowrap;
+  max-width: 70px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* =============================================
+   SEARCH BAR
+   ============================================= */
+.search-bar {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 20px;
+  overflow: hidden;
+  padding: 0 10px;
+  gap: 6px;
+}
+
+.search-bar input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: var(--white);
+  font-size: 13px;
+  padding: 8px 0;
+  outline: none;
+}
+
+.search-bar input::placeholder {
+  color: rgba(255,255,255,0.5);
+}
+
+.search-bar button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.search-bar button img {
+  filter: brightness(0) invert(1);
+  opacity: 0.8;
+}
+
+/* =============================================
+   CART ICON
+   ============================================= */
+.cart-icon {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.cart-icon a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  position: relative;
+}
+
+.cart-icon img {
+  filter: brightness(0) invert(1);
+}
+
+#cart-count {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  background: #e63946;
+  color: var(--white);
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3px;
+}
+
+/* =============================================
+   AD BANNER
+   ============================================= */
+.ad-banner-container {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.ad-banner-container::-webkit-scrollbar { display: none; }
+
+.ad-banner {
+  min-width: 100%;
+  scroll-snap-align: start;
+  background: linear-gradient(135deg, var(--primary) 0%, #2d2d4e 100%);
+  padding: 24px 20px;
+  text-align: center;
+  border-bottom: 2px solid var(--accent);
+}
+
+.ad-banner h2 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+
+.ad-banner p {
+  font-size: 12px;
+  color: var(--accent-light);
+  margin-bottom: 14px;
+  line-height: 1.5;
+}
+
+.ad-banner .button {
+  display: inline-block;
+  padding: 8px 20px;
+  background: var(--accent);
+  color: var(--primary);
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  letter-spacing: 0.5px;
+  transition: background 0.2s;
+}
+
+.ad-banner .button:hover {
+  background: var(--accent-light);
+}
+
+/* =============================================
+   COSMETIC ICON (AROMA)
+   ============================================= */
+.cosmetic-icon-outer-container {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+}
+
+.cosmetic-icon-outer-container::-webkit-scrollbar { display: none; }
+
+.cosmetic-icon-set {
+  min-width: 100%;
+  scroll-snap-align: start;
+  padding: 12px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cosmetic-icon-container {
+  display: flex;
+  gap: 6px;
+  justify-content: space-around;
+}
+
+.cosmetic-icon-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-decoration: none;
+  color: var(--text);
+  font-size: 10px;
+  padding: 8px 6px;
+  border-radius: 10px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  min-width: 52px;
+  transition: all 0.2s;
+}
+
+.cosmetic-icon-item i {
+  font-size: 16px;
+  color: var(--accent);
+}
+
+.cosmetic-icon-item:hover {
+  background: var(--primary);
+  color: var(--white);
+  border-color: var(--primary);
+}
+
+.cosmetic-icon-item:hover i {
+  color: var(--accent);
+}
+
+.cosmetic-icon-item span {
+  text-align: center;
+  line-height: 1.2;
+  font-size: 9px;
+}
+
+/* =============================================
+   MARQUEE
+   ============================================= */
+.marquee {
+  background: var(--accent);
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 6px 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.marquee span {
+  display: inline-block;
+  animation: marqueeScroll 12s linear infinite;
+  padding-left: 100%;
+}
+
+@keyframes marqueeScroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-100%); }
+}
+
+/* =============================================
+   PRODUCT WRAPPER
+   ============================================= */
+.product-wrapper {
+  padding: 16px 12px;
+}
+
+.product-container-title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: var(--primary);
+  text-align: center;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+
+.product-container-title::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+/* =============================================
+   PRODUCT GRID
+   ============================================= */
+.product-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.product-item {
+  background: var(--white);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s;
+}
+
+.product-item:active { transform: scale(0.97); }
+
+.product-item a {
+  text-decoration: none;
+  color: var(--text);
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.product-item a img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 8px;
+  background: var(--bg);
+  margin-bottom: 8px;
+}
+
+.variant-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.product-item a p {
+  font-size: 12px;
+  color: var(--text);
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.product-item hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 6px 0;
+}
+
+.product-item a p:last-of-type {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.add-to-cart-button {
+  width: 100%;
+  padding: 9px;
+  background: var(--primary);
+  color: var(--white);
+  border: none;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  border-top: 1px solid var(--border);
+  font-family: inherit;
+}
+
+.add-to-cart-button:hover,
+.add-to-cart-button:active {
+  background: var(--accent);
+  color: var(--primary);
+}
+
+/* =============================================
+   NEXT BUTTON
+   ============================================= */
+#nextButton {
+  text-align: center;
+  padding: 16px;
+}
+
+#nextButton a {
+  display: inline-block;
+  padding: 11px 28px;
+  background: var(--primary);
+  color: var(--white);
+  border-radius: 24px;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  letter-spacing: 0.5px;
+  transition: background 0.2s;
+}
+
+#nextButton a:hover {
+  background: var(--accent);
+  color: var(--primary);
+}
+
+/* =============================================
+   CHAT BUTTON
+   ============================================= */
+#chatButton {
+  position: fixed;
+  bottom: 80px;
+  right: 16px;
+  z-index: 200;
+  background: var(--primary);
+  border-radius: 50%;
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  border: 2px solid var(--accent);
+  transition: transform 0.2s;
+}
+
+#chatButton:hover { transform: scale(1.08); }
+
+#chatButton img {
+  filter: brightness(0) invert(1);
+  width: 24px;
+  height: 24px;
+}
+
+/* =============================================
+   CHAT POPUP
+   ============================================= */
+#chatPopup {
+  display: none;
+  position: fixed;
+  bottom: 140px;
+  right: 16px;
+  width: 300px;
+  max-height: 380px;
+  background: var(--white);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  border: 1px solid var(--border);
+  z-index: 300;
+  overflow: hidden;
+  display: none;
+  flex-direction: column;
+}
+
+#chatHeader {
+  background: var(--primary);
+  color: var(--white);
+  padding: 12px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid var(--accent);
+}
+
+#chatMessages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+  font-size: 13px;
+  min-height: 200px;
+  max-height: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.message { padding: 8px 12px; border-radius: 12px; max-width: 85%; line-height: 1.4; }
+.user-message { background: var(--primary); color: var(--white); align-self: flex-end; }
+.bot-message  { background: var(--bg); color: var(--text); align-self: flex-start; border: 1px solid var(--border); }
+
+#chatInputContainer {
+  display: flex;
+  padding: 10px 12px;
+  gap: 8px;
+  border-top: 1px solid var(--border);
+}
+
+#chatInput {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  font-size: 13px;
+  outline: none;
+  font-family: inherit;
+}
+
+#chatInput:focus { border-color: var(--accent); }
+
+#sendBtn {
+  padding: 8px 16px;
+  background: var(--primary);
+  color: var(--white);
+  border: none;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.2s;
+}
+
+#sendBtn:hover { background: var(--accent); color: var(--primary); }
+
+/* =============================================
+   FOOTER
+   ============================================= */
+.sticky-footer {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  background: var(--white);
+  border-top: 1px solid var(--border);
+  z-index: 100;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.06);
+}
+
+.footer-menu ul {
+  list-style: none;
+  display: flex;
+  justify-content: space-around;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-menu ul li a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: var(--text-light);
+  font-size: 10px;
+  padding: 8px 12px;
+  gap: 2px;
+  transition: color 0.2s;
+}
+
+.footer-menu ul li a img {
+  width: 24px !important;
+  height: 24px;
+  object-fit: contain;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+
+.footer-menu ul li a:hover { color: var(--primary); }
+.footer-menu ul li a:hover img { opacity: 1; }
+
+/* =============================================
+   CONTENT
+   ============================================= */
+.content { padding-bottom: 16px; }
+.sticky-elements { position: relative; }
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+@media (max-width: 360px) {
+  .product-container { gap: 8px; }
+  .header-container { padding: 8px 10px; }
+  .cosmetic-icon-item { min-width: 46px; font-size: 9px; }
+  #chatPopup { width: 260px; right: 10px; }
+}
+
+@media (min-width: 480px) {
+  .product-container { grid-template-columns: repeat(3, 1fr); }
+}

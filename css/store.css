@@ -1,0 +1,419 @@
+/* =============================================
+   PAREFFI STORE — store.css
+   ============================================= */
+
+/* ROOT VARIABEL */
+:root {
+  --primary: #1a1a2e;
+  --accent: #c9a84c;
+  --accent-light: #e8d5a3;
+  --bg: #f7f5f0;
+  --white: #ffffff;
+  --text: #2c2c2c;
+  --text-light: #888888;
+  --border: #e0ddd6;
+  --shadow: 0 2px 12px rgba(0,0,0,0.08);
+  --radius: 12px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+}
+
+/* =============================================
+   PAGE CONTAINER
+   ============================================= */
+.page-container {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: var(--white);
+  position: relative;
+}
+
+/* =============================================
+   HEADER
+   ============================================= */
+.sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--primary);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  gap: 10px;
+}
+
+/* =============================================
+   SEARCH BAR
+   ============================================= */
+.search-bar {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 24px;
+  overflow: hidden;
+  padding: 0 10px;
+  gap: 6px;
+}
+
+.search-bar input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: var(--white);
+  font-size: 13px;
+  padding: 8px 0;
+  outline: none;
+}
+
+.search-bar input::placeholder {
+  color: rgba(255,255,255,0.5);
+}
+
+.search-bar button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.search-bar button img {
+  filter: brightness(0) invert(1);
+  opacity: 0.8;
+}
+
+/* =============================================
+   DROPDOWN UKURAN
+   ============================================= */
+.size-dropdown {
+  display: flex;
+  align-items: center;
+}
+
+.size-dropdown select {
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: var(--white);
+  font-size: 12px;
+  padding: 6px 8px;
+  border-radius: 16px;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.size-dropdown select option {
+  background: var(--primary);
+  color: var(--white);
+}
+
+/* =============================================
+   CART ICON
+   ============================================= */
+.cart-icon {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.cart-icon a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  position: relative;
+}
+
+.cart-icon img {
+  filter: brightness(0) invert(1);
+}
+
+#cart-count {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  background: #e63946;
+  color: var(--white);
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3px;
+}
+
+/* =============================================
+   PRODUCT WRAPPER
+   ============================================= */
+.product-wrapper {
+  padding: 16px 12px 80px;
+}
+
+.product-container-title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: var(--primary);
+  text-align: center;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+
+.product-container-title::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 2px;
+  background: var(--accent);
+}
+
+/* =============================================
+   PRODUCT GRID
+   ============================================= */
+.product-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+/* =============================================
+   PRODUCT CARD
+   ============================================= */
+.product-item {
+  background: var(--white);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+}
+
+.product-item:active {
+  transform: scale(0.97);
+}
+
+.product-item a {
+  text-decoration: none;
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 10px;
+}
+
+.product-item img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 8px;
+  background: var(--bg);
+  margin-bottom: 8px;
+}
+
+.variant-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.product-item a p {
+  font-size: 12px;
+  color: var(--text);
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.product-item hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 6px 0;
+}
+
+.product-item a p:last-of-type {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.cosmetic-icon {
+  margin-top: 4px;
+  opacity: 0.7;
+}
+
+/* =============================================
+   TOMBOL TAMBAH KERANJANG
+   ============================================= */
+.add-to-cart-button {
+  width: 100%;
+  padding: 9px;
+  background: var(--primary);
+  color: var(--white);
+  border: none;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: background 0.2s;
+  border-top: 1px solid var(--border);
+}
+
+.add-to-cart-button:hover,
+.add-to-cart-button:active {
+  background: var(--accent);
+  color: var(--primary);
+}
+
+/* =============================================
+   PAGINATION
+   ============================================= */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 24px;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.pagination a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--white);
+  color: var(--text);
+  font-size: 13px;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.pagination a:hover {
+  background: var(--primary);
+  color: var(--white);
+  border-color: var(--primary);
+}
+
+.pagination a[style*="font-weight: bold"] {
+  background: var(--primary);
+  color: var(--white);
+  border-color: var(--primary);
+}
+
+/* =============================================
+   FOOTER / BOTTOM NAV
+   ============================================= */
+.sticky-footer {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  background: var(--white);
+  border-top: 1px solid var(--border);
+  z-index: 100;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.06);
+}
+
+.footer-container {
+  padding: 0;
+}
+
+.footer-menu ul {
+  list-style: none;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+
+.footer-menu ul li a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: var(--text-light);
+  font-size: 10px;
+  padding: 8px 12px;
+  gap: 2px;
+  transition: color 0.2s;
+}
+
+.footer-menu ul li a img {
+  width: 24px !important;
+  height: 24px;
+  object-fit: contain;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+
+.footer-menu ul li a:hover,
+.footer-menu ul li.active a {
+  color: var(--primary);
+}
+
+.footer-menu ul li a:hover img,
+.footer-menu ul li.active a img {
+  opacity: 1;
+}
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+@media (max-width: 360px) {
+  .product-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  .header-container {
+    padding: 8px 10px;
+  }
+}
+
+@media (min-width: 480px) {
+  .product-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

@@ -1,0 +1,336 @@
+/* =============================================
+   PAREFFI — register.css
+   ============================================= */
+
+:root {
+  --primary: #1a1a2e;
+  --accent: #c9a84c;
+  --accent-light: #e8d5a3;
+  --bg: #f7f5f0;
+  --white: #ffffff;
+  --text: #2c2c2c;
+  --text-light: #888888;
+  --border: #e0ddd6;
+  --shadow: 0 4px 20px rgba(0,0,0,0.10);
+  --radius: 12px;
+  --error: #e63946;
+  --success: #2a9d8f;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: var(--primary);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 24px 16px 40px;
+  display: flex;
+  justify-content: center;
+}
+
+/* =============================================
+   CONTAINER
+   ============================================= */
+.container {
+  width: 100%;
+  max-width: 440px;
+}
+
+/* =============================================
+   HEADER
+   ============================================= */
+.register-header {
+  text-align: center;
+  padding: 32px 20px 24px;
+  background: linear-gradient(135deg, #1a1a2e 0%, #2d2d4e 100%);
+  border-radius: var(--radius) var(--radius) 0 0;
+  border-bottom: 2px solid var(--accent);
+}
+
+.logo-mark {
+  font-size: 28px;
+  color: var(--accent);
+  letter-spacing: 8px;
+  margin-bottom: 10px;
+}
+
+.register-header h1 {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--white);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.register-header p {
+  font-size: 12px;
+  color: var(--accent-light);
+  letter-spacing: 1px;
+  font-style: italic;
+}
+
+/* =============================================
+   FORM BODY
+   ============================================= */
+.form-body {
+  background: var(--white);
+  border-radius: 0 0 var(--radius) var(--radius);
+  padding: 24px 20px 28px;
+  box-shadow: var(--shadow);
+}
+
+/* =============================================
+   PESAN GLOBAL
+   ============================================= */
+.msg-error {
+  background: rgba(230,57,70,0.08);
+  border: 1px solid rgba(230,57,70,0.3);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: var(--error);
+  margin-bottom: 0;
+  border-radius: 0;
+}
+
+.msg-success {
+  background: rgba(42,157,143,0.08);
+  border: 1px solid rgba(42,157,143,0.3);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: var(--success);
+  margin-bottom: 0;
+  border-radius: 0;
+}
+
+/* =============================================
+   FORM GROUP
+   ============================================= */
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 6px;
+}
+
+.form-group label i {
+  margin-right: 5px;
+  color: var(--accent);
+  width: 14px;
+}
+
+/* Input & Textarea */
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="tel"],
+.form-group input[type="password"],
+.form-group input[type="date"],
+.form-group textarea {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-size: 14px;
+  color: var(--text);
+  background: var(--bg);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(201,168,76,0.15);
+  background: var(--white);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* =============================================
+   INPUT PASSWORD + TOGGLE
+   ============================================= */
+.input-password {
+  position: relative;
+}
+
+.input-password input {
+  padding-right: 42px;
+}
+
+.toggle-pw {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: var(--text-light);
+  font-size: 14px;
+  transition: color 0.2s;
+}
+
+.toggle-pw:hover {
+  color: var(--accent);
+}
+
+/* =============================================
+   RADIO GROUP
+   ============================================= */
+.radio-group {
+  display: flex;
+  gap: 20px;
+  padding: 10px 0;
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text);
+  cursor: pointer;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.radio-label input[type="radio"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+/* =============================================
+   CHECKBOX PERSETUJUAN
+   ============================================= */
+.checkbox-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.checkbox-group input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin-top: 3px;
+  accent-color: var(--accent);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.checkbox-group label {
+  font-size: 12px;
+  color: var(--text-light);
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 400;
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.checkbox-group label a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.checkbox-group label a:hover {
+  text-decoration: underline;
+}
+
+/* =============================================
+   ERROR MESSAGE PER FIELD
+   ============================================= */
+.error-message {
+  font-size: 11px;
+  color: var(--error);
+  margin-top: 4px;
+  min-height: 14px;
+}
+
+/* =============================================
+   TOMBOL DAFTAR
+   ============================================= */
+#btnDaftar {
+  width: 100%;
+  padding: 13px;
+  background: var(--primary);
+  color: var(--white);
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  margin-top: 8px;
+  margin-bottom: 14px;
+}
+
+#btnDaftar:hover {
+  background: var(--accent);
+  color: var(--primary);
+}
+
+#btnDaftar:active {
+  transform: scale(0.98);
+}
+
+#btnDaftar:disabled {
+  background: var(--border);
+  color: var(--text-light);
+  cursor: not-allowed;
+}
+
+/* =============================================
+   LINK LOGIN
+   ============================================= */
+.login-link {
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-light);
+}
+
+.login-link a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.login-link a:hover {
+  text-decoration: underline;
+}
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+@media (max-width: 380px) {
+  .form-body {
+    padding: 20px 14px 24px;
+  }
+  .register-header {
+    padding: 24px 14px 18px;
+  }
+  .register-header h1 {
+    font-size: 15px;
+  }
+}

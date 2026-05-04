@@ -1,0 +1,327 @@
+/* =============================================
+   PAREFFI — login.css
+   ============================================= */
+
+:root {
+  --primary: #1a1a2e;
+  --accent: #c9a84c;
+  --accent-light: #e8d5a3;
+  --bg: #f7f5f0;
+  --white: #ffffff;
+  --text: #2c2c2c;
+  --text-light: #888888;
+  --border: #e0ddd6;
+  --shadow: 0 4px 20px rgba(0,0,0,0.10);
+  --radius: 14px;
+  --error: #e63946;
+  --success: #2a9d8f;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background-color: var(--primary);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* =============================================
+   BANNER
+   ============================================= */
+.imgur-banner {
+  display: block;
+  width: 100%;
+  max-width: 420px;
+  background: linear-gradient(135deg, #1a1a2e 0%, #2d2d4e 100%);
+  border-radius: var(--radius) var(--radius) 0 0;
+  overflow: hidden;
+  text-decoration: none;
+  position: relative;
+  padding: 32px 24px 24px;
+  text-align: center;
+  border-bottom: 2px solid var(--accent);
+}
+
+.imgur-banner::before {
+  content: '✦';
+  display: block;
+  font-size: 28px;
+  color: var(--accent);
+  margin-bottom: 8px;
+  letter-spacing: 6px;
+}
+
+.banner-text h1 {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: var(--white);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.banner-text p {
+  font-size: 12px;
+  color: var(--accent-light);
+  letter-spacing: 1px;
+  font-style: italic;
+}
+
+/* =============================================
+   FORM CARD
+   ============================================= */
+.account-form {
+  width: 100%;
+  max-width: 420px;
+  background: var(--white);
+  border-radius: 0 0 var(--radius) var(--radius);
+  padding: 28px 24px;
+  box-shadow: var(--shadow);
+}
+
+.account-form h2 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 20px;
+  text-align: center;
+  letter-spacing: 1px;
+  position: relative;
+  padding-bottom: 12px;
+}
+
+.account-form h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 36px;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+/* =============================================
+   FORM SECTION
+   ============================================= */
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Label */
+.form-section label,
+label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-light);
+  margin-bottom: 5px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* Input */
+.form-section input[type="email"],
+.form-section input[type="password"],
+.form-section input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="text"] {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-size: 14px;
+  color: var(--text);
+  background: var(--bg);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  margin-bottom: 16px;
+}
+
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="text"]:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(201,168,76,0.15);
+  background: var(--white);
+}
+
+/* =============================================
+   AGREEMENT / CHECKBOX
+   ============================================= */
+.agreement {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.agreement input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  accent-color: var(--accent);
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.agreement label {
+  font-size: 12px;
+  color: var(--text-light);
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 400;
+  cursor: pointer;
+  line-height: 1.5;
+  margin-bottom: 0;
+}
+
+.agreement label a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.agreement label a:hover {
+  text-decoration: underline;
+}
+
+/* =============================================
+   TOMBOL LOGIN
+   ============================================= */
+#btnLogin,
+button[type="submit"],
+button[type="button"] {
+  width: 100%;
+  padding: 13px;
+  background: var(--primary);
+  color: var(--white);
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  margin-bottom: 14px;
+}
+
+#btnLogin:hover,
+button[type="submit"]:hover {
+  background: var(--accent);
+  color: var(--primary);
+}
+
+#btnLogin:active {
+  transform: scale(0.98);
+}
+
+#btnLogin:disabled {
+  background: var(--border);
+  color: var(--text-light);
+  cursor: not-allowed;
+}
+
+/* =============================================
+   LINK BAWAH FORM
+   ============================================= */
+.form-section p,
+p {
+  font-size: 13px;
+  color: var(--text-light);
+  text-align: center;
+  margin-top: 4px;
+}
+
+.form-section p a,
+p a,
+#btnForgot {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  padding: 0;
+  width: auto;
+  letter-spacing: 0;
+  text-transform: none;
+  margin: 0;
+  display: inline;
+}
+
+#btnForgot:hover,
+.form-section p a:hover {
+  text-decoration: underline;
+  background: none;
+  color: var(--accent);
+}
+
+/* =============================================
+   PESAN ERROR / SUKSES
+   ============================================= */
+#msg-error {
+  background: rgba(230, 57, 70, 0.08);
+  border: 1px solid rgba(230, 57, 70, 0.3);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: var(--error);
+  margin-bottom: 14px;
+}
+
+#msg-success {
+  background: rgba(42, 157, 143, 0.08);
+  border: 1px solid rgba(42, 157, 143, 0.3);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: var(--success);
+  margin-bottom: 14px;
+}
+
+/* =============================================
+   FOOTER
+   ============================================= */
+.site-footer {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.site-footer p {
+  font-size: 11px;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 1px;
+}
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+@media (max-width: 380px) {
+  .account-form {
+    padding: 22px 16px;
+  }
+  .imgur-banner {
+    padding: 24px 16px 18px;
+  }
+  .banner-text h1 {
+    font-size: 15px;
+    letter-spacing: 2px;
+  }
+}
