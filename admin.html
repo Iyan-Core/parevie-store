@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Upload Produk Pareffi</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    :root {
+      --primary: #1a1a2e;
+      --accent: #c9a84c;
+      --bg: #f7f5f0;
+      --white: #fff;
+      --border: #e0ddd6;
+      --text: #2c2c2c;
+      --text-light: #888;
+      --error: #e63946;
+      --success: #2a9d8f;
+      --radius: 12px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      padding-bottom: 40px;
+    }
+
+    /* HEADER */
+    .header {
+      background: var(--primary);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 2px solid var(--accent);
+    }
+    .header h1 {
+      color: var(--white);
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    .header span {
+      font-size: 22px;
+      color: var(--accent);
+    }
+
+    /* CONTAINER */
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 20px 16px;
+    }
+
+    /* SECTION */
+    .section {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 16px;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .section h2 {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+    .section h2::after {
+      content: '';
+      position: absolute;
+      bottom: -1px; left: 0;
+      width: 28px; height: 2px;
+      background: var(--accent);
+      border-radius: 2px;
+    }
+
+    /* FORM */
+    label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      margin-bottom: 5px;
+      margin-top: 12px;
+    }
+    label:first-of-type { margin-top: 0; }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px 13px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-size: 14px;
+      color: var(--text);
+      background: var(--bg);
+      outline: none;
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--accent);
+      background: var(--white);
+    }
+    textarea { resize: vertical; min-height: 70px; }
+
+    /* CHECKBOX */
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .checkbox-row input[type="checkbox"] {
+      width: 18px; height: 18px;
+      accent-color: var(--accent);
+      flex-shrink: 0;
+    }
+    .checkbox-row label {
+      margin: 0;
+      text-transform: none;
+      font-size: 13px;
+      color: var(--text);
+      font-weight: 400;
+      letter-spacing: 0;
+    }
+
+    /* UPLOAD AREA */
+    .upload-area {
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      padding: 24px 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 8px;
+    }
+    .upload-area:hover { border-color: var(--accent); background: rgba(201,168,76,0.05); }
+    .upload-area i { font-size: 32px; color: var(--accent); margin-bottom: 8px; display: block; }
+    .upload-area p { font-size: 13px; color: var(--text-light); }
+    .upload-area input { display: none; }
+
+    /* PREVIEW GAMBAR */
+    .preview-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .preview-item {
+      position: relative;
+      aspect-ratio: 1;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .preview-item img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+    .preview-item .remove-img {
+      position: absolute;
+      top: 4px; right: 4px;
+      background: rgba(230,57,70,0.9);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 22px; height: 22px;
+      font-size: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* PROGRESS */
+    .progress-bar {
+      height: 6px;
+      background: var(--border);
+      border-radius: 6px;
+      margin-top: 12px;
+      overflow: hidden;
+      display: none;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 6px;
+      width: 0%;
+      transition: width 0.3s;
+    }
+
+    /* TOMBOL */
+    .btn-submit {
+      width: 100%;
+      padding: 14px;
+      background: var(--primary);
+      color: var(--white);
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: inherit;
+      transition: background 0.2s;
+      margin-top: 4px;
+    }
+    .btn-submit:hover { background: var(--accent); color: var(--primary); }
+    .btn-submit:disabled { background: var(--border); color: var(--text-light); cursor: not-allowed; }
+
+    /* PESAN */
+    .msg {
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      margin-top: 12px;
+      display: none;
+      text-align: center;
+    }
+    .msg.success { background: rgba(42,157,143,0.1); border: 1px solid rgba(42,157,143,0.3); color: var(--success); }
+    .msg.error   { background: rgba(230,57,70,0.1); border: 1px solid rgba(230,57,70,0.3); color: var(--error); }
+
+    /* DAFTAR PRODUK */
+    .product-list-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--bg);
+    }
+    .product-list-item:last-child { border-bottom: none; }
+    .product-list-item img {
+      width: 48px; height: 48px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .product-list-info { flex: 1; }
+    .product-list-info .name { font-size: 13px; font-weight: 600; color: var(--text); }
+    .product-list-info .price { font-size: 12px; color: var(--text-light); }
+    .btn-delete {
+      background: rgba(230,57,70,0.08);
+      color: var(--error);
+      border: 1px solid rgba(230,57,70,0.3);
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 12px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    /* NOT ADMIN */
+    .not-admin {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-light);
+    }
+    .not-admin i { font-size: 48px; margin-bottom: 16px; display: block; color: var(--error); }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <span>✦</span>
+    <h1>ADMIN — Pareffi Store</h1>
+  </div>
+
+  <div class="container" id="mainContent">
+    <div style="text-align:center;padding:40px;color:#aaa;">
+      <i class="fa fa-spinner fa-spin" style="font-size:24px;"></i>
+      <p style="margin-top:10px;">Memuat...</p>
+    </div>
+  </div>
+
+  <!-- FIREBASE -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import {
+      getAuth, onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import {
+      getFirestore,
+      collection, addDoc, getDocs,
+      doc, updateDoc, deleteDoc,
+      query, orderBy, serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import {
+      getStorage,
+      ref, uploadBytesResumable, getDownloadURL, deleteObject
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
+    const firebaseConfig = {
+      apiKey: "AIza...",
+      authDomain: "pareffi-store.firebaseapp.com",
+      projectId: "pareffi-store",
+      storageBucket: "pareffi-store.firebasestorage.app",
+      messagingSenderId: "673404128533",
+      appId: "1:673404128533:web:325b2f82825e8c4697ed1c"
+    };
+
+    const app     = initializeApp(firebaseConfig);
+    const auth    = getAuth(app);
+    const db      = getFirestore(app);
+    const storage = getStorage(app);
+
+    // UID admin yang boleh akses halaman ini
+    // Ganti dengan UID akun admin kamu
+    const ADMIN_UIDS = ['MASUKKAN_UID_ADMIN_KAMU'];
+
+    let selectedFiles = []; // File gambar yang dipilih
+
+    // ==============================
+    // CEK ADMIN
+    // ==============================
+    onAuthStateChanged(auth, async (user) => {
+      const main = document.getElementById('mainContent');
+
+      if (!user || !ADMIN_UIDS.includes(user.uid)) {
+        main.innerHTML = `
+          <div class="not-admin">
+            <i class="fa fa-lock"></i>
+            <p>Akses ditolak. Halaman ini hanya untuk admin.</p>
+            <p style="font-size:12px;margin-top:8px;">UID kamu: <code>${user?.uid || 'Belum login'}</code></p>
+            <p style="font-size:11px;margin-top:4px;color:#aaa;">Copy UID di atas dan masukkan ke ADMIN_UIDS di kode.</p>
+          </div>`;
+        return;
+      }
+
+      // Render halaman admin
+      renderAdminPage(main);
+      await loadProducts();
+    });
+
+    // ==============================
+    // RENDER HALAMAN ADMIN
+    // ==============================
+    function renderAdminPage(container) {
+      container.innerHTML = `
+        <!-- FORM TAMBAH PRODUK -->
+        <div class="section">
+          <h2>Tambah Produk Baru</h2>
+
+          <label>Nama Produk</label>
+          <input type="text" id="prodName" placeholder="Rose Ellegance">
+
+          <label>Harga (Rp)</label>
+          <input type="number" id="prodPrice" placeholder="40000">
+
+          <label>Ukuran (ml)</label>
+          <input type="number" id="prodSize" placeholder="30">
+
+          <label>Aroma</label>
+          <input type="text" id="prodAroma" placeholder="Floral, Musk, dll">
+
+          <label>Kategori</label>
+          <select id="prodCategory">
+            <option value="">Pilih Kategori</option>
+            <option value="woman">Woman</option>
+            <option value="man">Man</option>
+            <option value="unisex">Unisex</option>
+            <option value="kids">Kids</option>
+          </select>
+
+          <label>Gender</label>
+          <select id="prodGender">
+            <option value="female">Female</option>
+            <option value="male">Male</option>
+          </select>
+
+          <label>Deskripsi</label>
+          <textarea id="prodDesc" placeholder="Deskripsi singkat produk"></textarea>
+
+          <label>Stok</label>
+          <input type="number" id="prodStock" placeholder="100" value="100">
+
+          <div class="checkbox-row">
+            <input type="checkbox" id="prodBestSeller">
+            <label for="prodBestSeller">Tandai sebagai Best Seller</label>
+          </div>
+
+          <label style="margin-top:16px;">Foto Produk (maks 3 foto)</label>
+          <div class="upload-area" id="uploadArea">
+            <i class="fa fa-cloud-upload-alt"></i>
+            <p>Tap untuk pilih foto produk</p>
+            <p style="font-size:11px;margin-top:4px;">JPG, PNG — Maks 2MB per foto</p>
+            <input type="file" id="fileInput" accept="image/*" multiple>
+          </div>
+
+          <div class="preview-grid" id="previewGrid"></div>
+
+          <div class="progress-bar" id="progressBar">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+
+          <button class="btn-submit" id="btnTambah">
+            <i class="fa fa-plus"></i> Tambah Produk
+          </button>
+          <div class="msg" id="formMsg"></div>
+        </div>
+
+        <!-- DAFTAR PRODUK -->
+        <div class="section">
+          <h2>Produk Tersimpan</h2>
+          <div id="productList">
+            <p style="color:#aaa;font-size:13px;text-align:center;padding:20px;">Memuat...</p>
+          </div>
+        </div>
+      `;
+
+      // Bind events setelah render
+      bindEvents();
+    }
+
+    // ==============================
+    // BIND EVENTS
+    // ==============================
+    function bindEvents() {
+      // Upload area klik
+      const uploadArea = document.getElementById('uploadArea');
+      const fileInput  = document.getElementById('fileInput');
+
+      uploadArea.addEventListener('click', () => fileInput.click());
+
+      fileInput.addEventListener('change', (e) => {
+        const files = Array.from(e.target.files);
+        files.forEach(file => {
+          if (selectedFiles.length >= 3) return;
+          if (file.size > 2 * 1024 * 1024) {
+            showMsg('formMsg', `${file.name} terlalu besar (maks 2MB).`, 'error');
+            return;
+          }
+          selectedFiles.push(file);
+        });
+        renderPreviews();
+        fileInput.value = '';
+      });
+
+      // Tombol tambah produk
+      document.getElementById('btnTambah').addEventListener('click', tambahProduk);
+    }
+
+    // ==============================
+    // PREVIEW GAMBAR
+    // ==============================
+    function renderPreviews() {
+      const grid = document.getElementById('previewGrid');
+      grid.innerHTML = '';
+      selectedFiles.forEach((file, i) => {
+        const url  = URL.createObjectURL(file);
+        const div  = document.createElement('div');
+        div.className = 'preview-item';
+        div.innerHTML = `
+          <img src="${url}">
+          <button class="remove-img" data-index="${i}">✕</button>`;
+        grid.appendChild(div);
+      });
+
+      // Bind hapus preview
+      grid.querySelectorAll('.remove-img').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          selectedFiles.splice(parseInt(btn.dataset.index), 1);
+          renderPreviews();
+        });
+      });
+    }
+
+    // ==============================
+    // TAMBAH PRODUK
+    // ==============================
+    async function tambahProduk() {
+      const name       = document.getElementById('prodName').value.trim();
+      const price      = parseInt(document.getElementById('prodPrice').value);
+      const size       = parseInt(document.getElementById('prodSize').value);
+      const aroma      = document.getElementById('prodAroma').value.trim();
+      const category   = document.getElementById('prodCategory').value;
+      const gender     = document.getElementById('prodGender').value;
+      const desc       = document.getElementById('prodDesc').value.trim();
+      const stock      = parseInt(document.getElementById('prodStock').value) || 100;
+      const bestSeller = document.getElementById('prodBestSeller').checked;
+
+      // Validasi
+      if (!name)     { showMsg('formMsg', 'Nama produk wajib diisi.', 'error'); return; }
+      if (!price)    { showMsg('formMsg', 'Harga wajib diisi.', 'error'); return; }
+      if (!size)     { showMsg('formMsg', 'Ukuran wajib diisi.', 'error'); return; }
+      if (!category) { showMsg('formMsg', 'Pilih kategori.', 'error'); return; }
+      if (selectedFiles.length === 0) {
+        showMsg('formMsg', 'Pilih minimal 1 foto produk.', 'error'); return;
+      }
+
+      const btn = document.getElementById('btnTambah');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Mengupload...';
+
+      const progressBar  = document.getElementById('progressBar');
+      const progressFill = document.getElementById('progressFill');
+      progressBar.style.display = 'block';
+
+      try {
+        // 1. Upload semua gambar ke Firebase Storage
+        const imageUrls = [];
+        for (let i = 0; i < selectedFiles.length; i++) {
+          const file      = selectedFiles[i];
+          const fileName  = `products/${Date.now()}_${i}_${file.name}`;
+          const storageRef = ref(storage, fileName);
+
+          await new Promise((resolve, reject) => {
+            const uploadTask = uploadBytesResumable(storageRef, file);
+            uploadTask.on('state_changed',
+              (snapshot) => {
+                const pct = Math.round(
+                  ((i / selectedFiles.length) + (snapshot.bytesTransferred / snapshot.totalBytes / selectedFiles.length)) * 100
+                );
+                progressFill.style.width = pct + '%';
+              },
+              reject,
+              async () => {
+                const url = await getDownloadURL(uploadTask.snapshot.ref);
+                imageUrls.push(url);
+                resolve();
+              }
+            );
+          });
+        }
+
+        progressFill.style.width = '100%';
+
+        // 2. Simpan data produk ke Firestore
+        await addDoc(collection(db, "products"), {
+          name, price, size, aroma, category,
+          gender, desc, stock, bestSeller,
+          images   : imageUrls,
+          sold     : 0,
+          rating   : 0,
+          createdAt: serverTimestamp()
+        });
+
+        showMsg('formMsg', `✅ Produk "${name}" berhasil ditambahkan!`, 'success');
+
+        // Reset form
+        ['prodName','prodPrice','prodSize','prodAroma','prodDesc','prodStock']
+          .forEach(id => document.getElementById(id).value = '');
+        document.getElementById('prodCategory').value = '';
+        document.getElementById('prodBestSeller').checked = false;
+        selectedFiles = [];
+        document.getElementById('previewGrid').innerHTML = '';
+        progressBar.style.display = 'none';
+        progressFill.style.width  = '0%';
+
+        // Refresh daftar produk
+        await loadProducts();
+
+      } catch (err) {
+        console.error('Upload error:', err);
+        showMsg('formMsg', '❌ Gagal upload. Coba lagi.', 'error');
+      }
+
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa fa-plus"></i> Tambah Produk';
+    }
+
+    // ==============================
+    // LOAD DAFTAR PRODUK
+    // ==============================
+    async function loadProducts() {
+      const list = document.getElementById('productList');
+      if (!list) return;
+
+      try {
+        const q    = query(collection(db, "products"), orderBy("createdAt", "desc"));
+        const snap = await getDocs(q);
+
+        if (snap.empty) {
+          list.innerHTML = '<p style="color:#aaa;font-size:13px;text-align:center;padding:20px;">Belum ada produk.</p>';
+          return;
+        }
+
+        list.innerHTML = '';
+        snap.forEach(docSnap => {
+          const p   = docSnap.data();
+          const img = p.images?.[0] || '';
+          const div = document.createElement('div');
+          div.className = 'product-list-item';
+          div.innerHTML = `
+            <img src="${img}" onerror="this.src=''" alt="${p.name}">
+            <div class="product-list-info">
+              <div class="name">${p.name} ${p.size}ml ${p.bestSeller ? '⭐' : ''}</div>
+              <div class="price">Rp${Number(p.price).toLocaleString('id-ID')} · ${p.category} · Stok: ${p.stock}</div>
+            </div>
+            <button class="btn-delete" data-id="${docSnap.id}" data-images='${JSON.stringify(p.images || [])}'>
+              <i class="fa fa-trash"></i>
+            </button>`;
+          list.appendChild(div);
+        });
+
+        // Bind hapus
+        list.querySelectorAll('.btn-delete').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            if (!confirm('Hapus produk ini?')) return;
+            const id     = btn.dataset.id;
+            const images = JSON.parse(btn.dataset.images);
+
+            // Hapus gambar dari Storage
+            for (const url of images) {
+              try {
+                await deleteObject(ref(storage, url));
+              } catch {}
+            }
+
+            // Hapus dokumen dari Firestore
+            await deleteDoc(doc(db, "products", id));
+            await loadProducts();
+          });
+        });
+
+      } catch (err) {
+        console.error('Gagal load produk:', err);
+        list.innerHTML = '<p style="color:red;font-size:13px;text-align:center;">Gagal memuat produk.</p>';
+      }
+    }
+
+    // ==============================
+    // HELPER PESAN
+    // ==============================
+    function showMsg(id, text, type) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent  = text;
+      el.className    = `msg ${type}`;
+      el.style.display = 'block';
+      if (type === 'success') setTimeout(() => el.style.display = 'none', 4000);
+    }
+
+  </script>
+</body>
+</html>

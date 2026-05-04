@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulir Pendaftaran - Pareffi</title>
+  <link rel="stylesheet" href="./assets/Css/register.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+
+  <div class="container">
+    <div class="register-header">
+      <div class="logo-mark">✦</div>
+      <h1>Daftar Akun Baru</h1>
+      <p>Bergabung dengan komunitas Pareffi</p>
+    </div>
+
+    <!-- Pesan error/sukses -->
+    <div id="msg-error" class="msg-error" style="display:none;"></div>
+    <div id="msg-success" class="msg-success" style="display:none;"></div>
+
+    <div class="form-body">
+
+      <div class="form-group">
+        <label for="nama"><i class="fa fa-user"></i> Nama Lengkap</label>
+        <input type="text" id="nama" placeholder="Masukkan nama lengkap Anda" required>
+        <div id="nama-error" class="error-message"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="email"><i class="fa fa-envelope"></i> Email</label>
+        <input type="email" id="email" placeholder="Masukkan alamat email Anda" required>
+        <div id="email-error" class="error-message"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="no_hp"><i class="fa fa-phone"></i> Nomor Handphone</label>
+        <input type="tel" id="no_hp" placeholder="Masukkan nomor handphone Anda" required>
+        <div id="no_hp-error" class="error-message"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="password"><i class="fa fa-lock"></i> Password</label>
+        <div class="input-password">
+          <input type="password" id="password" placeholder="Minimal 6 karakter" required>
+          <span class="toggle-pw" onclick="togglePw('password')"><i class="fa fa-eye"></i></span>
+        </div>
+        <div id="password-error" class="error-message"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="konfirmasi_password"><i class="fa fa-lock"></i> Konfirmasi Password</label>
+        <div class="input-password">
+          <input type="password" id="konfirmasi_password" placeholder="Ulangi password" required>
+          <span class="toggle-pw" onclick="togglePw('konfirmasi_password')"><i class="fa fa-eye"></i></span>
+        </div>
+        <div id="konfirmasi_password-error" class="error-message"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="tanggal_lahir"><i class="fa fa-calendar"></i> Tanggal Lahir</label>
+        <input type="date" id="tanggal_lahir" required>
+        <div id="tanggal_lahir-error" class="error-message"></div>
+      </div>
+
+      <div class="form-group">
+        <label><i class="fa fa-venus-mars"></i> Jenis Kelamin</label>
+        <div class="radio-group">
+          <label class="radio-label">
+            <input type="radio" name="jenis_kelamin" value="pria" required> Pria
+          </label>
+          <label class="radio-label">
+            <input type="radio" name="jenis_kelamin" value="wanita"> Wanita
+          </label>
+        </div>
+        <div id="jenis_kelamin-error" class="error-message"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="alamat"><i class="fa fa-map-marker-alt"></i> Alamat</label>
+        <textarea id="alamat" placeholder="Masukkan alamat lengkap Anda" rows="3"></textarea>
+        <div id="alamat-error" class="error-message"></div>
+      </div>
+
+      <div class="form-group">
+        <div class="checkbox-group">
+          <input type="checkbox" id="persetujuan" required>
+          <label for="persetujuan">
+            Saya setuju dengan
+            <a href="syarat_layanan.html" target="_blank">Syarat Layanan</a> dan
+            <a href="kebijakan_privacy.html" target="_blank">Kebijakan Privasi</a> Pareffi.
+          </label>
+        </div>
+        <div id="persetujuan-error" class="error-message"></div>
+      </div>
+
+      <button id="btnDaftar" type="button">Daftar</button>
+
+      <p class="login-link">Sudah punya akun? <a href="login.html">Masuk di sini</a></p>
+
+    </div>
+  </div>
+
+  <!-- FIREBASE -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      updateProfile
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      setDoc,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIza...",
+      authDomain: "pareffi-store.firebaseapp.com",
+      projectId: "pareffi-store",
+      storageBucket: "pareffi-store.firebasestorage.app",
+      messagingSenderId: "673404128533",
+      appId: "1:673404128533:web:325b2f82825e8c4697ed1c"
+    };
+
+    const app  = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db   = getFirestore(app);
+
+    // Elemen pesan
+    const msgError   = document.getElementById('msg-error');
+    const msgSuccess = document.getElementById('msg-success');
+
+    function showError(msg) {
+      msgError.textContent = msg;
+      msgError.style.display = 'block';
+      msgSuccess.style.display = 'none';
+      msgError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function showSuccess(msg) {
+      msgSuccess.textContent = msg;
+      msgSuccess.style.display = 'block';
+      msgError.style.display = 'none';
+    }
+
+    function clearFieldError(id) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = '';
+    }
+
+    function setFieldError(id, msg) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = msg;
+    }
+
+    // ==============================
+    // TOMBOL DAFTAR
+    // ==============================
+    document.getElementById('btnDaftar').addEventListener('click', async () => {
+      // Reset semua error
+      ['nama','email','no_hp','password','konfirmasi_password',
+       'tanggal_lahir','jenis_kelamin','alamat','persetujuan'].forEach(clearFieldError);
+
+      // Ambil nilai
+      const nama               = document.getElementById('nama').value.trim();
+      const email              = document.getElementById('email').value.trim();
+      const no_hp              = document.getElementById('no_hp').value.trim();
+      const password           = document.getElementById('password').value;
+      const konfirmasi         = document.getElementById('konfirmasi_password').value;
+      const tanggal_lahir      = document.getElementById('tanggal_lahir').value;
+      const jenis_kelamin      = document.querySelector('input[name="jenis_kelamin"]:checked');
+      const alamat             = document.getElementById('alamat').value.trim();
+      const persetujuan        = document.getElementById('persetujuan').checked;
+
+      // Validasi
+      let valid = true;
+
+      if (!nama) { setFieldError('nama-error', 'Nama lengkap wajib diisi.'); valid = false; }
+      if (!email) { setFieldError('email-error', 'Email wajib diisi.'); valid = false; }
+      if (!no_hp) { setFieldError('no_hp-error', 'Nomor handphone wajib diisi.'); valid = false; }
+      if (!password) {
+        setFieldError('password-error', 'Password wajib diisi.'); valid = false;
+      } else if (password.length < 6) {
+        setFieldError('password-error', 'Password minimal 6 karakter.'); valid = false;
+      }
+      if (password !== konfirmasi) {
+        setFieldError('konfirmasi_password-error', 'Password tidak cocok.'); valid = false;
+      }
+      if (!tanggal_lahir) { setFieldError('tanggal_lahir-error', 'Tanggal lahir wajib diisi.'); valid = false; }
+      if (!jenis_kelamin) { setFieldError('jenis_kelamin-error', 'Pilih jenis kelamin.'); valid = false; }
+      if (!persetujuan) { setFieldError('persetujuan-error', 'Harus menyetujui syarat layanan.'); valid = false; }
+
+      if (!valid) return;
+
+      const btn = document.getElementById('btnDaftar');
+      btn.textContent = 'Mendaftarkan...';
+      btn.disabled = true;
+
+      try {
+        // 1. Buat akun di Firebase Auth
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        // 2. Update display name
+        await updateProfile(user, { displayName: nama });
+
+        // 3. Simpan data lengkap ke Firestore collection "users"
+        await setDoc(doc(db, "users", user.uid), {
+          uid          : user.uid,
+          nama         : nama,
+          email        : email,
+          no_hp        : no_hp,
+          tanggal_lahir: tanggal_lahir,
+          jenis_kelamin: jenis_kelamin.value,
+          alamat       : alamat,
+          role         : "customer",      // default role
+          createdAt    : serverTimestamp()
+        });
+
+        // 4. Simpan ke localStorage
+        localStorage.setItem('pareffi_user', JSON.stringify({
+          uid        : user.uid,
+          email      : user.email,
+          displayName: nama
+        }));
+
+        showSuccess('Pendaftaran berhasil! Mengalihkan ke halaman login...');
+        setTimeout(() => {
+          window.location.href = 'login.html';
+        }, 2000);
+
+      } catch (error) {
+        const errMap = {
+          'auth/email-already-in-use' : 'Email sudah terdaftar. Gunakan email lain.',
+          'auth/invalid-email'        : 'Format email tidak valid.',
+          'auth/weak-password'        : 'Password terlalu lemah. Gunakan minimal 6 karakter.',
+          'auth/network-request-failed': 'Koneksi gagal. Periksa internet kamu.'
+        };
+        showError(errMap[error.code] || 'Pendaftaran gagal. Coba lagi.');
+        btn.textContent = 'Daftar';
+        btn.disabled = false;
+      }
+    });
+
+  </script>
+
+  <!-- Toggle password visibility -->
+  <script>
+    function togglePw(id) {
+      const input = document.getElementById(id);
+      input.type = input.type === 'password' ? 'text' : 'password';
+    }
+  </script>
+
+</body>
+</html>

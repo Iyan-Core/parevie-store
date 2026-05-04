@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Etalase Produk - Page</title>
+  <link rel="stylesheet" href="./Css/store.css">
+</head>
+<body>
+  <div class="page-container">
+    <header class="sticky-header">
+      <div class="header-container">
+        <div class="search-bar">
+          <input type="text" placeholder="Cari..." id="searchInput">
+          <button type="submit" id="searchButton">
+            <img src="./img/search.png" alt="search" width="16" height="16">
+          </button>
+
+          <!-- Dropdown Ukuran Botol -->
+          <div class="size-dropdown">
+            <label for="bottleSize"></label>
+            <select id="bottleSize">
+              <option value="">Semua Ukuran</option>
+              <option value="roll on">Roll On</option>
+              <option value="20ml">20ml</option>
+              <option value="pocket">Pocket</option>
+              <option value="30ml">30ml</option>
+              <option value="50ml">50ml</option>
+              <option value="100ml">100ml</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Keranjang -->
+        <div class="cart-icon">
+          <a href="./cart.html">
+            <img src="./img/cart.png" alt="Cart Icon" width="30" height="30">
+            <span id="cart-count">0</span>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Etalase Produk -->
+    <div class="product-wrapper">
+      <h1 class="product-container-title">KATALOG PRODUK</h1>
+      <div id="product-list" class="product-container"></div>
+      <div id="pagination" class="pagination"></div>
+    </div>
+
+    <footer class="sticky-footer">
+      <div class="footer-container">
+        <nav class="footer-menu">
+          <ul>
+            <li>
+              <a href="index.html">
+                <img src="./img/home.png" alt="Beranda" width="35" style="vertical-align: middle;">
+                Beranda
+              </a>
+            </li>
+            <li>
+              <a href="store.html">
+                <img src="./img/store.png" alt="Store" width="35" style="vertical-align: middle;">
+                Store
+              </a>
+            </li>
+            <li>
+              <a href="artikel.html">
+                <img src="./img/artikel.png" alt="Artikel" width="35" style="vertical-align: middle;">
+                Artikel
+              </a>
+            </li>
+            <li>
+              <a href="./profile.html">
+                <img src="./img/profile.png" alt="profile" width="35" style="vertical-align: middle;">
+                Saya
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </footer>
+  </div>
+
+  <!-- FIREBASE SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, query, orderBy }
+      from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIza...",
+      authDomain: "pareffi-store.firebaseapp.com",
+      projectId: "pareffi-store",
+      storageBucket: "pareffi-store.firebasestorage.app",
+      messagingSenderId: "673404128533",
+      appId: "1:673404128533:web:325b2f82825e8c4697ed1c"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // ==============================
+    // AMBIL ELEMEN
+    // ==============================
+    const productContainer = document.getElementById('product-list');
+    const cartCountSpan = document.getElementById('cart-count');
+    const searchInput = document.getElementById('searchInput');
+    const searchButton = document.getElementById('searchButton');
+    const paginationContainer = document.getElementById('pagination');
+    const bottleSizeDropdown = document.getElementById("bottleSize");
+
+    const productsPerPage = 8;
+    let products = [];
+
+    // ==============================
+    // LOAD PRODUK DARI FIRESTORE
+    // ==============================
+    async function loadProducts() {
+      productContainer.innerHTML = '<p style="text-align:center;margin-top:20px;">Memuat produk...</p>';
+
+      try {
+        const q = query(collection(db, "products"), orderBy("name"));
+        const snapshot = await getDocs(q);
+
+        products = [];
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          products.push({
+            id: doc.id,
+            name: data.name || '',
+            price: data.price || 0,
+            // Ambil gambar pertama dari array images, atau field image langsung
+            image: Array.isArray(data.images) ? data.images[0] : (data.image || ''),
+            size: data.size ? data.size + 'ml' : '',
+            category: data.category || '',
+            aroma: data.aroma || '',
+            gender: data.gender || ''
+          });
+        });
+
+        filterProducts();
+        updateCartCount();
+
+      } catch (error) {
+        productContainer.innerHTML = '<p style="text-align:center;color:red;">Gagal memuat produk. Coba refresh.</p>';
+        console.error("Firebase error:", error);
+      }
+    }
+
+    // ==============================
+    // FILTER UKURAN BOTOL
+    // ==============================
+    function filterProducts() {
+      const selectedSize = bottleSizeDropdown.value.toLowerCase();
+      let filtered = products;
+
+      if (selectedSize && selectedSize !== "") {
+        filtered = products.filter(p =>
+          (p.size || '').toLowerCase().includes(selectedSize) ||
+          (p.category || '').toLowerCase().includes(selectedSize)
+        );
+      }
+
+      performSearch(filtered);
+    }
+
+    // ==============================
+    // SEARCH
+    // ==============================
+    function performSearch(filteredArray = null) {
+      const q = (searchInput && searchInput.value || '').toLowerCase().trim();
+      let listToRender = filteredArray || products;
+
+      if (q) {
+        listToRender = listToRender.filter(p => p.name.toLowerCase().includes(q));
+      }
+
+      renderPagination(listToRender);
+      renderProducts(listToRender);
+    }
+
+    // ==============================
+    // RENDER PRODUK
+    // ==============================
+    function renderProducts(list) {
+      const urlParams = new URLSearchParams(window.location.search);
+      let currentPage = parseInt(urlParams.get('page')) || 1;
+      const startIndex = (currentPage - 1) * productsPerPage;
+      const endIndex = startIndex + productsPerPage;
+      const paginatedList = list.slice(startIndex, endIndex);
+
+      productContainer.innerHTML = '';
+
+      if (paginatedList.length === 0) {
+        const msg = document.createElement('p');
+        msg.textContent = "Belum ada produk sesuai filter.";
+        msg.style.textAlign = "center";
+        msg.style.marginTop = "20px";
+        productContainer.appendChild(msg);
+        return;
+      }
+
+      paginatedList.forEach(prod => {
+        const div = document.createElement('div');
+        div.classList.add('product-item');
+        div.setAttribute('data-product-id', prod.id);
+        div.innerHTML = `
+          <a href="#.html?product=${encodeURIComponent(prod.id)}">
+            <p class="variant-title">${prod.name}</p>
+            <img src="${prod.image}" alt="${prod.name}" onerror="this.src='./img/no-image.png'">
+            <p>${prod.name} ${prod.size || ''}</p>
+            <hr>
+            <p>Harga: Rp ${Number(prod.price).toLocaleString('id-ID')}</p>
+            ${prod.gender === 'male'
+              ? '<img src="./img/male.png" class="cosmetic-icon" style="width:24px;height:24px;">'
+              : '<img src="./img/female.png" class="cosmetic-icon" style="width:24px;height:24px;">'}
+          </a>
+          <button class="add-to-cart-button"
+            data-product-id="${prod.id}"
+            data-product-name="${prod.name}"
+            data-product-price="${prod.price}"
+            data-product-image="${prod.image}">
+            Tambah ke Keranjang
+          </button>
+        `;
+        productContainer.appendChild(div);
+      });
+
+      bindAddToCartButtons();
+    }
+
+    // ==============================
+    // CART (tetap pakai localStorage)
+    // ==============================
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    function updateCartCount() {
+      let totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+      cartCountSpan.textContent = totalItems;
+    }
+
+    function saveCart() {
+      localStorage.setItem('cart', JSON.stringify(cart));
+    }
+
+    function bindAddToCartButtons() {
+      document.querySelectorAll('.add-to-cart-button').forEach(button => {
+        button.addEventListener('click', function () {
+          const productId = this.dataset.productId;
+          const productName = this.dataset.productName;
+          const productPrice = parseInt(this.dataset.productPrice);
+          const productImage = this.dataset.productImage;
+
+          const existing = cart.find(item => item.id === productId);
+          if (existing) existing.quantity++;
+          else cart.push({ id: productId, name: productName, price: productPrice, image: productImage, quantity: 1 });
+
+          saveCart();
+          updateCartCount();
+        });
+      });
+    }
+
+    // ==============================
+    // PAGINATION
+    // ==============================
+    function renderPagination(list) {
+      const totalPages = Math.ceil(list.length / productsPerPage);
+      const urlParams = new URLSearchParams(window.location.search);
+      let currentPage = parseInt(urlParams.get('page')) || 1;
+      if (currentPage > totalPages) currentPage = totalPages;
+
+      const currentSearch = urlParams.get('search') || '';
+      const currentSize = urlParams.get('size') || '';
+
+      paginationContainer.innerHTML = '';
+      if (totalPages <= 1) return;
+
+      // Prev
+      const prevBtn = document.createElement('a');
+      prevBtn.textContent = '< Prev';
+      prevBtn.href = `?page=${currentPage - 1}&search=${currentSearch}&size=${currentSize}`;
+      prevBtn.style.margin = "0 5px";
+      prevBtn.style.color = currentPage === 1 ? '#ccc' : '#000';
+      if (currentPage > 1) {
+        prevBtn.addEventListener('click', e => {
+          e.preventDefault();
+          window.location.search = `?page=${currentPage - 1}&search=${currentSearch}&size=${currentSize}`;
+        });
+      }
+      paginationContainer.appendChild(prevBtn);
+
+      // Nomor halaman
+      let startPage = Math.max(1, currentPage - 1);
+      let endPage = Math.min(totalPages, startPage + 1);
+      if (endPage - startPage < 2) startPage = Math.max(1, endPage - 1);
+
+      for (let i = startPage; i <= endPage; i++) {
+        const pageLink = document.createElement('a');
+        pageLink.href = `?page=${i}&search=${currentSearch}&size=${currentSize}`;
+        pageLink.textContent = i;
+        pageLink.style.margin = "0 5px";
+        if (i === currentPage) {
+          pageLink.style.fontWeight = 'bold';
+          pageLink.style.textDecoration = 'underline';
+        }
+        pageLink.addEventListener('click', e => {
+          e.preventDefault();
+          window.location.search = `?page=${i}&search=${currentSearch}&size=${currentSize}`;
+        });
+        paginationContainer.appendChild(pageLink);
+      }
+
+      // Next
+      const nextBtn = document.createElement('a');
+      nextBtn.textContent = 'Next >';
+      nextBtn.href = `?page=${currentPage + 1}&search=${currentSearch}&size=${currentSize}`;
+      nextBtn.style.margin = "0 5px";
+      nextBtn.style.color = currentPage === totalPages ? '#ccc' : '#000';
+      if (currentPage < totalPages) {
+        nextBtn.addEventListener('click', e => {
+          e.preventDefault();
+          window.location.search = `?page=${currentPage + 1}&search=${currentSearch}&size=${currentSize}`;
+        });
+      }
+      paginationContainer.appendChild(nextBtn);
+    }
+
+    // ==============================
+    // EVENT LISTENERS
+    // ==============================
+    searchButton && searchButton.addEventListener('click', () => performSearch());
+    searchInput && searchInput.addEventListener('keyup', () => performSearch());
+    bottleSizeDropdown.addEventListener('change', filterProducts);
+
+    // ==============================
+    // MULAI
+    // ==============================
+    loadProducts();
+
+  </script>
+</body>
+</html>

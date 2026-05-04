@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login - Pareffi</title>
+  <!-- Sesuaikan CSS kamu -->
+  <link rel="stylesheet" href="./assets/Css/login.css">
+</head>
+<body>
+
+  <a href="https://imgur.com/l1530bX" class="imgur-banner">
+    <div class="banner-text">
+      <h1>SELAMAT DATANG DI PAREFFI</h1>
+      <p>Parfumnya parfum modern</p>
+    </div>
+  </a>
+
+  <div class="account-form">
+    <h2>Sudah Punya Akun?</h2>
+
+    <div id="login-form" class="form-section">
+
+      <!-- Pesan error/sukses -->
+      <div id="msg-error" style="display:none;color:red;margin-bottom:10px;font-size:13px;"></div>
+      <div id="msg-success" style="display:none;color:green;margin-bottom:10px;font-size:13px;"></div>
+
+      <!-- Form — tidak pakai action/method karena sudah pakai Firebase -->
+      <div>
+        <label for="login-email">Email:</label>
+        <input type="email" id="login-email" required placeholder="email@kamu.com"><br><br>
+
+        <label for="login-password">Password:</label>
+        <input type="password" id="login-password" required placeholder="Password"><br><br>
+
+        <div class="agreement">
+          <input type="checkbox" id="login-agreement" required>
+          <label for="login-agreement">
+            Saya menyetujui <a href="syarat_layanan.html">Ketentuan Penggunaan</a>
+            dan <a href="kebijakan_privacy.html">Kebijakan Privasi</a> Pareffi.
+          </label>
+        </div><br>
+
+        <!-- Tombol Login -->
+        <button id="btnLogin" type="button">Masuk</button>
+
+        <!-- Lupa password -->
+        <p style="margin-top:8px;">
+          <a href="#" id="btnForgot">Lupa password?</a>
+        </p>
+
+        <p>Belum punya akun? <a href="register.html">Daftar di sini</a></p>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <p>© by:pareffi</p>
+  </footer>
+
+  <!-- FIREBASE -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import {
+      getAuth,
+      signInWithEmailAndPassword,
+      sendPasswordResetEmail
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIza...",
+      authDomain: "pareffi-store.firebaseapp.com",
+      projectId: "pareffi-store",
+      storageBucket: "pareffi-store.firebasestorage.app",
+      messagingSenderId: "673404128533",
+      appId: "1:673404128533:web:325b2f82825e8c4697ed1c"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Elemen
+    const btnLogin   = document.getElementById('btnLogin');
+    const btnForgot  = document.getElementById('btnForgot');
+    const msgError   = document.getElementById('msg-error');
+    const msgSuccess = document.getElementById('msg-success');
+
+    function showError(msg) {
+      msgError.textContent = msg;
+      msgError.style.display = 'block';
+      msgSuccess.style.display = 'none';
+    }
+
+    function showSuccess(msg) {
+      msgSuccess.textContent = msg;
+      msgSuccess.style.display = 'block';
+      msgError.style.display = 'none';
+    }
+
+    // ==============================
+    // TOMBOL LOGIN
+    // ==============================
+    btnLogin.addEventListener('click', async () => {
+      const email     = document.getElementById('login-email').value.trim();
+      const password  = document.getElementById('login-password').value;
+      const agreement = document.getElementById('login-agreement').checked;
+
+      // Validasi
+      if (!email || !password) {
+        showError('Email dan password wajib diisi.'); return;
+      }
+      if (!agreement) {
+        showError('Centang persetujuan ketentuan terlebih dahulu.'); return;
+      }
+
+      btnLogin.textContent = 'Memproses...';
+      btnLogin.disabled = true;
+
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        // Simpan info user ke localStorage
+        localStorage.setItem('pareffi_user', JSON.stringify({
+          uid: user.uid,
+          email: user.email,
+          displayName: user.displayName || ''
+        }));
+
+        showSuccess('Login berhasil! Mengalihkan...');
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 1000);
+
+      } catch (error) {
+        // Pesan error yang ramah
+        const errMap = {
+          'auth/user-not-found'   : 'Email tidak terdaftar.',
+          'auth/wrong-password'   : 'Password salah.',
+          'auth/invalid-email'    : 'Format email tidak valid.',
+          'auth/too-many-requests': 'Terlalu banyak percobaan. Coba lagi nanti.',
+          'auth/invalid-credential': 'Email atau password salah.'
+        };
+        showError(errMap[error.code] || 'Login gagal. Coba lagi.');
+        btnLogin.textContent = 'Masuk';
+        btnLogin.disabled = false;
+      }
+    });
+
+    // ==============================
+    // LUPA PASSWORD
+    // ==============================
+    btnForgot.addEventListener('click', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value.trim();
+
+      if (!email) {
+        showError('Masukkan email kamu dulu untuk reset password.'); return;
+      }
+
+      try {
+        await sendPasswordResetEmail(auth, email);
+        showSuccess('Link reset password sudah dikirim ke email kamu.');
+      } catch (error) {
+        showError('Gagal kirim email reset. Pastikan email terdaftar.');
+      }
+    });
+
+  </script>
+</body>
+</html>

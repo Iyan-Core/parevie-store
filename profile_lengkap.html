@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profil Lengkap - Pareffi</title>
+  <link rel="stylesheet" href="./assets/Css/profile_lengkap.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    /* Loading overlay */
+    #loadingOverlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(26,26,46,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+    }
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(255,255,255,0.2);
+      border-top-color: #c9a84c;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Toast notifikasi */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1a1a2e;
+      color: #fff;
+      padding: 10px 24px;
+      border-radius: 20px;
+      font-size: 13px;
+      display: none;
+      z-index: 1000;
+      white-space: nowrap;
+    }
+    #toast.show {
+      display: block;
+      animation: fadeInOut 2.5s ease forwards;
+    }
+    @keyframes fadeInOut {
+      0%  { opacity: 0; }
+      10% { opacity: 1; }
+      80% { opacity: 1; }
+      100%{ opacity: 0; }
+    }
+
+    /* Input dalam mode edit */
+    .field-input {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1.5px solid #e0ddd6;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      margin-top: 4px;
+      background: #f7f5f0;
+      transition: border-color 0.2s;
+    }
+    .field-input:focus {
+      border-color: #c9a84c;
+      background: #fff;
+    }
+    textarea.field-input {
+      resize: vertical;
+      min-height: 70px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Loading -->
+  <div id="loadingOverlay">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast"></div>
+
+  <div class="profile-container">
+
+    <!-- Header Profil -->
+    <div class="profile-header">
+      <img src="https://i.imgur.com/l1530bX.jpg" alt="Foto Profil" id="profileAvatarHeader">
+      <h1 id="profileUsernameHeader">...</h1>
+    </div>
+
+    <!-- Informasi Pribadi -->
+    <div class="profile-details" id="profileDetails">
+      <h2>Informasi Pribadi</h2>
+
+      <p>
+        <strong>Nama Lengkap:</strong>
+        <span id="namaLengkapDisplay">-</span>
+        <input type="text" id="namaLengkapInput" class="field-input" style="display:none;" placeholder="Nama lengkap">
+      </p>
+      <p>
+        <strong>Email:</strong>
+        <span id="emailDisplay">-</span>
+        <!-- Email tidak bisa diedit langsung, harus via setting_akun -->
+        <small id="emailNote" style="display:none;color:#aaa;font-size:11px;">
+          Ubah email di Setting Akun
+        </small>
+      </p>
+      <p>
+        <strong>Nomor Telepon:</strong>
+        <span id="nomorTeleponDisplay">-</span>
+        <input type="tel" id="nomorTeleponInput" class="field-input" style="display:none;" placeholder="+62 8xxx">
+      </p>
+      <p>
+        <strong>Tanggal Lahir:</strong>
+        <span id="tglLahirDisplay">-</span>
+        <input type="date" id="tglLahirInput" class="field-input" style="display:none;">
+      </p>
+      <p>
+        <strong>Jenis Kelamin:</strong>
+        <span id="jenisKelaminDisplay">-</span>
+        <select id="jenisKelaminInput" class="field-input" style="display:none;">
+          <option value="pria">Pria</option>
+          <option value="wanita">Wanita</option>
+        </select>
+      </p>
+      <p>
+        <strong>Alamat:</strong>
+        <span id="alamatDisplay">-</span>
+        <textarea id="alamatInput" class="field-input" style="display:none;" placeholder="Alamat lengkap"></textarea>
+      </p>
+      <p>
+        <strong>Bio:</strong>
+        <span id="bioDisplay">-</span>
+        <input type="text" id="bioInput" class="field-input" style="display:none;" placeholder="Bio singkat kamu">
+      </p>
+    </div>
+
+    <!-- Preferensi Produk -->
+    <div class="profile-details">
+      <h2>Preferensi Parfum</h2>
+      <p>
+        <strong>Aroma Favorit:</strong>
+        <span id="aromaDisplay">-</span>
+        <input type="text" id="aromaInput" class="field-input" style="display:none;" placeholder="Floral, woody, dll">
+      </p>
+      <p>
+        <strong>Kategori Favorit:</strong>
+        <span id="kategoriDisplay">-</span>
+        <select id="kategoriInput" class="field-input" style="display:none;">
+          <option value="">Pilih kategori</option>
+          <option value="woman">Woman</option>
+          <option value="man">Man</option>
+          <option value="unisex">Unisex</option>
+          <option value="kids">Kids</option>
+        </select>
+      </p>
+      <p>
+        <strong>Produk Favorit:</strong>
+        <span id="produkFavoritDisplay">-</span>
+        <input type="text" id="produkFavoritInput" class="field-input" style="display:none;" placeholder="Nama produk favorit">
+      </p>
+    </div>
+
+    <!-- Tombol Aksi -->
+    <div class="profile-actions">
+      <a href="./profile.html" class="back-button" id="permanentBack">
+        <i class="fa fa-arrow-left"></i> Kembali
+      </a>
+      <a href="#" id="editProfileLink">
+        <i class="fa fa-pen"></i> Edit
+      </a>
+      <a href="#" id="saveProfileLink" style="display:none;">
+        <i class="fa fa-save"></i> Simpan
+      </a>
+      <a href="#" id="cancelEditLink" class="back-button" style="display:none;">
+        <i class="fa fa-times"></i> Batal
+      </a>
+    </div>
+
+  </div>
+
+  <!-- FIREBASE -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import {
+      getAuth,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      updateDoc,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIza...",
+      authDomain: "pareffi-store.firebaseapp.com",
+      projectId: "pareffi-store",
+      storageBucket: "pareffi-store.firebasestorage.app",
+      messagingSenderId: "673404128533",
+      appId: "1:673404128533:web:325b2f82825e8c4697ed1c"
+    };
+
+    const app  = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db   = getFirestore(app);
+
+    let currentUser = null;
+    let userData    = {};
+
+    // ==============================
+    // CEK LOGIN
+    // ==============================
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = 'login.html';
+        return;
+      }
+      currentUser = user;
+      await loadProfile(user);
+      document.getElementById('loadingOverlay').style.display = 'none';
+    });
+
+    // ==============================
+    // LOAD DATA DARI FIRESTORE
+    // ==============================
+    async function loadProfile(user) {
+      try {
+        const docSnap = await getDoc(doc(db, "users", user.uid));
+
+        if (docSnap.exists()) {
+          userData = docSnap.data();
+        }
+
+        const avatar = userData.photoURL || 'https://i.imgur.com/l1530bX.jpg';
+        const nama   = userData.nama || user.displayName || 'Pengguna';
+
+        // Header
+        document.getElementById('profileAvatarHeader').src        = avatar;
+        document.getElementById('profileUsernameHeader').textContent = nama;
+
+        // Informasi pribadi
+        setDisplay('namaLengkap',  userData.nama          || '-');
+        setDisplay('email',        user.email             || '-');
+        setDisplay('nomorTelepon', userData.no_hp         || '-');
+        setDisplay('tglLahir',     userData.tanggal_lahir || '-');
+        setDisplay('jenisKelamin', userData.jenis_kelamin || '-');
+        setDisplay('alamat',       userData.alamat        || '-');
+        setDisplay('bio',          userData.bio           || '-');
+
+        // Preferensi parfum
+        setDisplay('aroma',        userData.aroma_favorit    || '-');
+        setDisplay('kategori',     userData.kategori_favorit || '-');
+        setDisplay('produkFavorit',userData.produk_favorit   || '-');
+
+      } catch (err) {
+        console.error('Gagal load profil:', err);
+        showToast('Gagal memuat data profil.');
+      }
+    }
+
+    function setDisplay(id, value) {
+      const el = document.getElementById(id + 'Display');
+      if (el) el.textContent = value;
+    }
+
+    // ==============================
+    // MODE EDIT
+    // ==============================
+    const fields = [
+      'namaLengkap', 'nomorTelepon', 'tglLahir',
+      'jenisKelamin', 'alamat', 'bio',
+      'aroma', 'kategori', 'produkFavorit'
+    ];
+
+    let initialValues = {};
+
+    function showEditFields() {
+      fields.forEach(field => {
+        const display = document.getElementById(field + 'Display');
+        const input   = document.getElementById(field + 'Input');
+        if (!display || !input) return;
+
+        initialValues[field] = display.textContent;
+        display.style.display = 'none';
+        input.style.display   = 'block';
+        input.value = display.textContent === '-' ? '' : display.textContent;
+      });
+
+      // Tampilkan note email
+      document.getElementById('emailNote').style.display = 'block';
+
+      document.getElementById('editProfileLink').style.display  = 'none';
+      document.getElementById('saveProfileLink').style.display  = 'inline-block';
+      document.getElementById('cancelEditLink').style.display   = 'inline-block';
+    }
+
+    function cancelEdit() {
+      fields.forEach(field => {
+        const display = document.getElementById(field + 'Display');
+        const input   = document.getElementById(field + 'Input');
+        if (!display || !input) return;
+
+        display.textContent   = initialValues[field];
+        display.style.display = 'inline';
+        input.style.display   = 'none';
+      });
+
+      document.getElementById('emailNote').style.display = 'none';
+      document.getElementById('editProfileLink').style.display  = 'inline-block';
+      document.getElementById('saveProfileLink').style.display  = 'none';
+      document.getElementById('cancelEditLink').style.display   = 'none';
+    }
+
+    // ==============================
+    // SIMPAN KE FIRESTORE
+    // ==============================
+    async function saveChanges() {
+      if (!currentUser) return;
+
+      const saveBtn = document.getElementById('saveProfileLink');
+      saveBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Menyimpan...';
+
+      try {
+        const updatedData = {
+          nama            : document.getElementById('namaLengkapInput').value.trim()  || userData.nama,
+          no_hp           : document.getElementById('nomorTeleponInput').value.trim() || '',
+          tanggal_lahir   : document.getElementById('tglLahirInput').value            || '',
+          jenis_kelamin   : document.getElementById('jenisKelaminInput').value        || '',
+          alamat          : document.getElementById('alamatInput').value.trim()       || '',
+          bio             : document.getElementById('bioInput').value.trim()          || '',
+          aroma_favorit   : document.getElementById('aromaInput').value.trim()        || '',
+          kategori_favorit: document.getElementById('kategoriInput').value            || '',
+          produk_favorit  : document.getElementById('produkFavoritInput').value.trim()|| '',
+          updatedAt       : serverTimestamp()
+        };
+
+        // Simpan ke Firestore
+        await updateDoc(doc(db, "users", currentUser.uid), updatedData);
+
+        // Update tampilan
+        fields.forEach(field => {
+          const display = document.getElementById(field + 'Display');
+          const input   = document.getElementById(field + 'Input');
+          if (!display || !input) return;
+
+          display.textContent   = input.value || '-';
+          display.style.display = 'inline';
+          input.style.display   = 'none';
+        });
+
+        document.getElementById('emailNote').style.display = 'none';
+        document.getElementById('editProfileLink').style.display  = 'inline-block';
+        document.getElementById('saveProfileLink').style.display  = 'none';
+        document.getElementById('cancelEditLink').style.display   = 'none';
+
+        // Update nama di header
+        document.getElementById('profileUsernameHeader').textContent =
+          updatedData.nama || currentUser.displayName;
+
+        showToast('✅ Profil berhasil disimpan!');
+
+      } catch (err) {
+        console.error('Gagal simpan:', err);
+        showToast('❌ Gagal menyimpan. Coba lagi.');
+      }
+
+      saveBtn.innerHTML = '<i class="fa fa-save"></i> Simpan';
+    }
+
+    // ==============================
+    // TOAST
+    // ==============================
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+
+    // ==============================
+    // EVENT LISTENERS
+    // ==============================
+    document.getElementById('editProfileLink').addEventListener('click', e => {
+      e.preventDefault(); showEditFields();
+    });
+    document.getElementById('saveProfileLink').addEventListener('click', e => {
+      e.preventDefault(); saveChanges();
+    });
+    document.getElementById('cancelEditLink').addEventListener('click', e => {
+      e.preventDefault(); cancelEdit();
+    });
+
+  </script>
+</body>
+</html>

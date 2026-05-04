@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pengaturan Akun - Pareffi</title>
+  <link rel="stylesheet" href="./assets/Css/setting_akun.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+
+  <!-- Toast -->
+  <div id="toast" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+    background:#1a1a2e;color:#fff;padding:10px 24px;border-radius:20px;font-size:13px;
+    display:none;z-index:1000;white-space:nowrap;"></div>
+
+  <div class="container">
+    <h1><i class="fa fa-gear"></i> Pengaturan Akun</h1>
+
+    <!-- ===== INFORMASI PRIBADI ===== -->
+    <section>
+      <h2>Informasi Pribadi</h2>
+
+      <label for="nama">Nama Lengkap</label>
+      <input type="text" id="nama" placeholder="Nama lengkap kamu">
+      <div id="nama-error" class="error-message"></div>
+
+      <label for="nickname">Username</label>
+      <input type="text" id="nickname" placeholder="@username">
+      <div id="nickname-error" class="error-message"></div>
+
+      <label for="bahasa">Bahasa</label>
+      <select id="bahasa">
+        <option value="id">Indonesia</option>
+        <option value="en">English</option>
+      </select>
+    </section>
+
+    <!-- ===== KEAMANAN EMAIL ===== -->
+    <section>
+      <h2>Ubah Email</h2>
+      <p style="font-size:12px;color:#888;margin-bottom:10px;">
+        Email saat ini: <strong id="currentEmail">-</strong>
+      </p>
+
+      <label for="newEmail">Email Baru</label>
+      <input type="email" id="newEmail" placeholder="email@baru.com">
+      <div id="email-error" class="error-message"></div>
+
+      <label for="emailPassword">Konfirmasi Password</label>
+      <div style="position:relative;">
+        <input type="password" id="emailPassword" placeholder="Masukkan password untuk verifikasi">
+        <span onclick="togglePw('emailPassword')"
+          style="position:absolute;right:12px;top:50%;transform:translateY(-50%);
+          cursor:pointer;color:#aaa;font-size:14px;">
+          <i class="fa fa-eye"></i>
+        </span>
+      </div>
+      <div id="emailPassword-error" class="error-message"></div>
+
+      <button id="btnUbahEmail" class="btn-secondary">
+        <i class="fa fa-envelope"></i> Ubah Email
+      </button>
+    </section>
+
+    <!-- ===== KEAMANAN PASSWORD ===== -->
+    <section>
+      <h2>Ubah Password</h2>
+
+      <label for="currentPassword">Password Saat Ini</label>
+      <div style="position:relative;">
+        <input type="password" id="currentPassword" placeholder="Password lama">
+        <span onclick="togglePw('currentPassword')"
+          style="position:absolute;right:12px;top:50%;transform:translateY(-50%);
+          cursor:pointer;color:#aaa;font-size:14px;">
+          <i class="fa fa-eye"></i>
+        </span>
+      </div>
+      <div id="currentPassword-error" class="error-message"></div>
+
+      <label for="newPassword">Password Baru</label>
+      <div style="position:relative;">
+        <input type="password" id="newPassword" placeholder="Minimal 6 karakter">
+        <span onclick="togglePw('newPassword')"
+          style="position:absolute;right:12px;top:50%;transform:translateY(-50%);
+          cursor:pointer;color:#aaa;font-size:14px;">
+          <i class="fa fa-eye"></i>
+        </span>
+      </div>
+      <div id="password-error" class="error-message"></div>
+
+      <button id="btnUbahPassword" class="btn-secondary">
+        <i class="fa fa-lock"></i> Ubah Password
+      </button>
+    </section>
+
+    <!-- ===== TEMA ===== -->
+    <section>
+      <h2>Tema Tampilan</h2>
+      <button id="toggle-theme">
+        <i class="fa fa-moon"></i> Ubah ke Tema Gelap
+      </button>
+    </section>
+
+    <!-- ===== HAPUS AKUN ===== -->
+    <section>
+      <h2 style="color:#e63946;">Zona Berbahaya</h2>
+      <p style="font-size:12px;color:#aaa;margin-bottom:10px;">
+        Menghapus akun bersifat permanen dan tidak dapat dibatalkan.
+      </p>
+      <button id="btnHapusAkun" class="btn-danger">
+        <i class="fa fa-trash"></i> Hapus Akun
+      </button>
+    </section>
+
+    <!-- TOMBOL AKSI -->
+    <div class="button-container">
+      <a href="./profile.html" class="back-button">
+        <i class="fa fa-arrow-left"></i> Kembali
+      </a>
+      <button id="simpan-perubahan">
+        <i class="fa fa-save"></i> Simpan Perubahan
+      </button>
+    </div>
+
+  </div>
+
+  <!-- FIREBASE -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import {
+      getAuth,
+      onAuthStateChanged,
+      updateEmail,
+      updatePassword,
+      reauthenticateWithCredential,
+      EmailAuthProvider,
+      deleteUser,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      updateDoc,
+      deleteDoc,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIza...",
+      authDomain: "pareffi-store.firebaseapp.com",
+      projectId: "pareffi-store",
+      storageBucket: "pareffi-store.firebasestorage.app",
+      messagingSenderId: "673404128533",
+      appId: "1:673404128533:web:325b2f82825e8c4697ed1c"
+    };
+
+    const app  = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db   = getFirestore(app);
+
+    let currentUser = null;
+
+    // ==============================
+    // CEK LOGIN
+    // ==============================
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = 'login.html';
+        return;
+      }
+      currentUser = user;
+      await loadData(user);
+    });
+
+    // ==============================
+    // LOAD DATA USER
+    // ==============================
+    async function loadData(user) {
+      try {
+        document.getElementById('currentEmail').textContent = user.email;
+
+        const docSnap = await getDoc(doc(db, "users", user.uid));
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          document.getElementById('nama').value     = data.nama     || '';
+          document.getElementById('nickname').value = data.nickname || '';
+          document.getElementById('bahasa').value   = data.bahasa   || 'id';
+        }
+      } catch (err) {
+        console.error('Gagal load data:', err);
+      }
+    }
+
+    // ==============================
+    // SIMPAN INFORMASI PRIBADI
+    // ==============================
+    document.getElementById('simpan-perubahan').addEventListener('click', async () => {
+      const nama     = document.getElementById('nama').value.trim();
+      const nickname = document.getElementById('nickname').value.trim();
+      const bahasa   = document.getElementById('bahasa').value;
+
+      // Reset error
+      document.getElementById('nama-error').textContent     = '';
+      document.getElementById('nickname-error').textContent = '';
+
+      let valid = true;
+      if (!nama)     { document.getElementById('nama-error').textContent = 'Nama harus diisi.'; valid = false; }
+      if (!nickname) { document.getElementById('nickname-error').textContent = 'Username harus diisi.'; valid = false; }
+      if (!valid) return;
+
+      const btn = document.getElementById('simpan-perubahan');
+      btn.textContent = 'Menyimpan...';
+      btn.disabled = true;
+
+      try {
+        await updateDoc(doc(db, "users", currentUser.uid), {
+          nama, nickname, bahasa,
+          updatedAt: serverTimestamp()
+        });
+        showToast('✅ Perubahan berhasil disimpan!');
+      } catch (err) {
+        showToast('❌ Gagal menyimpan. Coba lagi.');
+      }
+
+      btn.innerHTML = '<i class="fa fa-save"></i> Simpan Perubahan';
+      btn.disabled = false;
+    });
+
+    // ==============================
+    // UBAH EMAIL
+    // ==============================
+    document.getElementById('btnUbahEmail').addEventListener('click', async () => {
+      const newEmail  = document.getElementById('newEmail').value.trim();
+      const password  = document.getElementById('emailPassword').value;
+
+      document.getElementById('email-error').textContent         = '';
+      document.getElementById('emailPassword-error').textContent = '';
+
+      if (!newEmail) { document.getElementById('email-error').textContent = 'Email baru harus diisi.'; return; }
+      if (!password) { document.getElementById('emailPassword-error').textContent = 'Password wajib diisi.'; return; }
+
+      try {
+        // Re-autentikasi dulu
+        const credential = EmailAuthProvider.credential(currentUser.email, password);
+        await reauthenticateWithCredential(currentUser, credential);
+
+        // Update email
+        await updateEmail(currentUser, newEmail);
+
+        // Update Firestore
+        await updateDoc(doc(db, "users", currentUser.uid), { email: newEmail });
+
+        document.getElementById('currentEmail').textContent = newEmail;
+        document.getElementById('newEmail').value           = '';
+        document.getElementById('emailPassword').value      = '';
+        showToast('✅ Email berhasil diubah!');
+
+      } catch (err) {
+        const errMap = {
+          'auth/wrong-password'       : 'Password salah.',
+          'auth/email-already-in-use' : 'Email sudah digunakan akun lain.',
+          'auth/invalid-email'        : 'Format email tidak valid.',
+          'auth/requires-recent-login': 'Sesi kadaluarsa. Silakan login ulang.'
+        };
+        showToast('❌ ' + (errMap[err.code] || 'Gagal ubah email.'));
+      }
+    });
+
+    // ==============================
+    // UBAH PASSWORD
+    // ==============================
+    document.getElementById('btnUbahPassword').addEventListener('click', async () => {
+      const currentPw = document.getElementById('currentPassword').value;
+      const newPw     = document.getElementById('newPassword').value;
+
+      document.getElementById('currentPassword-error').textContent = '';
+      document.getElementById('password-error').textContent        = '';
+
+      if (!currentPw) { document.getElementById('currentPassword-error').textContent = 'Password saat ini wajib diisi.'; return; }
+      if (!newPw)     { document.getElementById('password-error').textContent = 'Password baru wajib diisi.'; return; }
+      if (newPw.length < 6) { document.getElementById('password-error').textContent = 'Password minimal 6 karakter.'; return; }
+
+      try {
+        // Re-autentikasi
+        const credential = EmailAuthProvider.credential(currentUser.email, currentPw);
+        await reauthenticateWithCredential(currentUser, credential);
+
+        // Update password
+        await updatePassword(currentUser, newPw);
+
+        document.getElementById('currentPassword').value = '';
+        document.getElementById('newPassword').value     = '';
+        showToast('✅ Password berhasil diubah!');
+
+      } catch (err) {
+        const errMap = {
+          'auth/wrong-password'       : 'Password saat ini salah.',
+          'auth/weak-password'        : 'Password baru terlalu lemah.',
+          'auth/requires-recent-login': 'Sesi kadaluarsa. Silakan login ulang.'
+        };
+        showToast('❌ ' + (errMap[err.code] || 'Gagal ubah password.'));
+      }
+    });
+
+    // ==============================
+    // HAPUS AKUN
+    // ==============================
+    document.getElementById('btnHapusAkun').addEventListener('click', async () => {
+      const konfirmasi = confirm(
+        '⚠️ Apakah kamu yakin ingin menghapus akun?\n\nSemua data akan dihapus permanen dan tidak bisa dikembalikan.'
+      );
+      if (!konfirmasi) return;
+
+      const password = prompt('Masukkan password kamu untuk konfirmasi:');
+      if (!password) return;
+
+      try {
+        // Re-autentikasi
+        const credential = EmailAuthProvider.credential(currentUser.email, password);
+        await reauthenticateWithCredential(currentUser, credential);
+
+        // Hapus data Firestore
+        await deleteDoc(doc(db, "users", currentUser.uid));
+
+        // Hapus akun Firebase Auth
+        await deleteUser(currentUser);
+
+        // Bersihkan localStorage
+        localStorage.removeItem('pareffi_user');
+        localStorage.removeItem('cart');
+
+        showToast('Akun berhasil dihapus.');
+        setTimeout(() => window.location.href = 'register.html', 1500);
+
+      } catch (err) {
+        const errMap = {
+          'auth/wrong-password'       : 'Password salah.',
+          'auth/requires-recent-login': 'Sesi kadaluarsa. Silakan login ulang.'
+        };
+        showToast('❌ ' + (errMap[err.code] || 'Gagal hapus akun.'));
+      }
+    });
+
+    // ==============================
+    // TEMA GELAP
+    // ==============================
+    const toggleThemeBtn = document.getElementById('toggle-theme');
+    const savedTheme = localStorage.getItem('pareffi_theme');
+    if (savedTheme === 'dark') {
+      document.body.classList.add('dark-mode');
+      toggleThemeBtn.innerHTML = '<i class="fa fa-sun"></i> Ubah ke Tema Terang';
+    }
+
+    toggleThemeBtn.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      const isDark = document.body.classList.contains('dark-mode');
+      toggleThemeBtn.innerHTML = isDark
+        ? '<i class="fa fa-sun"></i> Ubah ke Tema Terang'
+        : '<i class="fa fa-moon"></i> Ubah ke Tema Gelap';
+      localStorage.setItem('pareffi_theme', isDark ? 'dark' : 'light');
+    });
+
+    // ==============================
+    // TOAST
+    // ==============================
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.style.display = 'block';
+      setTimeout(() => toast.style.display = 'none', 2500);
+    }
+
+  </script>
+
+  <!-- Toggle password -->
+  <script>
+    function togglePw(id) {
+      const input = document.getElementById(id);
+      input.type = input.type === 'password' ? 'text' : 'password';
+    }
+  </script>
+
+</body>
+</html>

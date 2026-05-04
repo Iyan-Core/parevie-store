@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profil - Pareffi</title>
+  <link rel="stylesheet" href="./assets/Css/profil.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="profile-left">
+      <a href="./index.html" class="back-btn" style="margin-right:10px; text-decoration:none; color:#fff; font-size:18px;"></a>
+      <img src="./img/fp.jpg" alt="Profil" id="profileImageHeader">
+      <span id="headerName">Halo, ...</span>
+    </div>
+    <div class="settings">
+      <i class="fa-solid fa-gear" id="settingsIcon"></i>
+      <div class="dropdown-menu" id="dropdownMenu">
+        <div class="back-button-container">
+          <a href="./index.html" class="back-button">⬅️ Kembali</a>
+        </div>
+        <a href="./profil lengkap.html">👤 Lihat Profil</a>
+        <a href="./setting_akun.html">✏️ Setting Akun</a>
+        <a href="./disclaimer.html">⚠️ Disclaimer</a>
+        <a href="./logout.html">🚪 Keluar</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Banner Profil -->
+  <div class="profile-banner">
+    <img src="./banner/figurin.png" alt="Banner Profil" id="profileBanner">
+  </div>
+
+  <!-- Kontainer Profil -->
+  <div class="profile-container">
+
+    <!-- Avatar besar + nama -->
+    <div class="profile-info">
+      <img src="./img/fp.jpg" alt="Foto Profil" class="profile-avatar" id="profileAvatar">
+      <h2 id="profileName">...</h2>
+      <p class="username" id="profileUsername">@...</p>
+      <p class="bio" id="profileBio">Parfum Creator | Futuristic Writer | Dreamer ✨</p>
+      <button class="edit-btn" id="editPhotoBtn">
+        <i class="fa-solid fa-pen"></i> Edit photo
+      </button>
+    </div>
+
+    <!-- Info Akun -->
+    <div class="account-info">
+      <h3>Informasi Akun</h3>
+      <ul>
+        <li><i class="fa-solid fa-envelope"></i> Email: <span id="profileEmail">-</span></li>
+        <li><i class="fa-solid fa-phone"></i> Telepon: <span id="profilePhone">-</span></li>
+        <li><i class="fa-solid fa-calendar"></i> Bergabung: <span id="profileJoined">-</span></li>
+      </ul>
+    </div>
+
+    <!-- Statistik -->
+    <div class="stats">
+      <div class="stat-card">
+        <h4 id="ordersCount">0</h4>
+        <p>Parfum Dipesan</p>
+      </div>
+      <div class="stat-card">
+        <h4 id="postCount">0</h4>
+        <p>Posting</p>
+      </div>
+      <div class="stat-card">
+        <h4 id="followerCount">0</h4>
+        <p>Pengikut</p>
+      </div>
+      <div class="stat-card">
+        <h4 id="followingCount">0</h4>
+        <p>Mengikuti</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FIREBASE -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import {
+      getAuth,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      updateDoc,
+      collection,
+      query,
+      where,
+      getDocs
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import {
+      getStorage,
+      ref,
+      uploadDataUrl,
+      getDownloadURL,
+      uploadString
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
+    const firebaseConfig = {
+      apiKey: "AIza...",
+      authDomain: "pareffi-store.firebaseapp.com",
+      projectId: "pareffi-store",
+      storageBucket: "pareffi-store.firebasestorage.app",
+      messagingSenderId: "673404128533",
+      appId: "1:673404128533:web:325b2f82825e8c4697ed1c"
+    };
+
+    const app     = initializeApp(firebaseConfig);
+    const auth    = getAuth(app);
+    const db      = getFirestore(app);
+    const storage = getStorage(app);
+
+    // ==============================
+    // CEK AUTH — jika belum login, redirect
+    // ==============================
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      // Load data user dari Firestore
+      await loadProfile(user);
+      await loadOrderCount(user.uid);
+    });
+
+    // ==============================
+    // LOAD PROFIL DARI FIRESTORE
+    // ==============================
+    async function loadProfile(user) {
+      try {
+        const docRef  = doc(db, "users", user.uid);
+        const docSnap = await getDoc(docRef);
+
+        let nama      = user.displayName || 'Pengguna';
+        let email     = user.email || '-';
+        let phone     = '-';
+        let bio       = 'Parfum Creator | Futuristic Writer | Dreamer ✨';
+        let avatar    = './img/fp.jpg';
+        let banner    = './banner/figurin.png';
+        let joined    = '-';
+        let followers = 0;
+        let following = 0;
+        let posts     = 0;
+
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          nama      = data.nama      || nama;
+          phone     = data.no_hp     || '-';
+          bio       = data.bio       || bio;
+          avatar    = data.photoURL  || avatar;
+          banner    = data.bannerURL || banner;
+          followers = data.followers || 0;
+          following = data.following || 0;
+          posts     = data.posts     || 0;
+
+          // Format tanggal bergabung
+          if (data.createdAt) {
+            const date = data.createdAt.toDate();
+            joined = date.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+          }
+        }
+
+        // Tampilkan ke halaman
+        document.getElementById('headerName').textContent    = 'Halo, ' + nama;
+        document.getElementById('profileName').textContent   = nama;
+        document.getElementById('profileUsername').textContent = '@' + (nama.toLowerCase().replace(/\s/g,'') || 'user');
+        document.getElementById('profileBio').textContent    = bio;
+        document.getElementById('profileEmail').textContent  = email;
+        document.getElementById('profilePhone').textContent  = phone;
+        document.getElementById('profileJoined').textContent = joined;
+        document.getElementById('followerCount').textContent = followers;
+        document.getElementById('followingCount').textContent = following;
+        document.getElementById('postCount').textContent     = posts;
+
+        // Avatar & Banner
+        document.getElementById('profileAvatar').src       = avatar;
+        document.getElementById('profileImageHeader').src  = avatar;
+        document.getElementById('profileBanner').src       = banner;
+
+        // Simpan uid untuk upload foto
+        window._currentUser = user;
+        window._currentAvatar = avatar;
+
+      } catch (err) {
+        console.error('Gagal load profil:', err);
+      }
+    }
+
+    // ==============================
+    // LOAD JUMLAH ORDER
+    // ==============================
+    async function loadOrderCount(uid) {
+      try {
+        const q = query(
+          collection(db, "orders"),
+          where("uid", "==", uid),
+          where("status", "==", "received")
+        );
+        const snap = await getDocs(q);
+        document.getElementById('ordersCount').textContent = snap.size;
+      } catch (err) {
+        document.getElementById('ordersCount').textContent = '0';
+      }
+    }
+
+    // ==============================
+    // EDIT FOTO PROFIL
+    // ==============================
+    const editPhotoBtn = document.getElementById('editPhotoBtn');
+
+    // Buat modal
+    const photoModal = document.createElement('div');
+    photoModal.id = 'photoModal';
+    Object.assign(photoModal.style, {
+      position: 'fixed', top: '0', left: '0',
+      width: '100%', height: '100%',
+      background: 'rgba(0,0,0,0.6)',
+      display: 'none', justifyContent: 'center',
+      alignItems: 'center', zIndex: '1000'
+    });
+
+    photoModal.innerHTML = `
+      <div style="background:#fff;padding:24px 20px;border-radius:16px;
+        text-align:center;max-width:300px;width:90%;display:flex;
+        flex-direction:column;gap:12px;">
+        <div style="font-size:13px;font-weight:700;color:#1a1a2e;
+          letter-spacing:1px;">GANTI FOTO PROFIL</div>
+        <img id="modalPreview" src="./img/fp.jpg"
+          style="width:90px;height:90px;border-radius:50%;
+          object-fit:cover;margin:0 auto;border:3px solid #c9a84c;">
+        <input type="file" id="fileInput" accept="image/*" style="display:none;">
+        <button id="selectFileBtn" style="padding:10px;background:#f7f5f0;
+          border:1px solid #e0ddd6;border-radius:8px;cursor:pointer;font-size:13px;">
+          📁 Pilih Foto
+        </button>
+        <button id="uploadBtn" style="padding:10px;background:#1a1a2e;
+          color:#fff;border:none;border-radius:8px;cursor:pointer;
+          font-size:13px;font-weight:700;">
+          ⬆️ Unggah
+        </button>
+        <button id="closeModalBtn" style="padding:10px;background:#eee;
+          border:none;border-radius:8px;cursor:pointer;font-size:13px;">
+          Batal
+        </button>
+      </div>`;
+
+    document.body.appendChild(photoModal);
+
+    const fileInput    = document.getElementById('fileInput');
+    const modalPreview = document.getElementById('modalPreview');
+    let tempDataUrl    = null;
+
+    editPhotoBtn.addEventListener('click', () => {
+      modalPreview.src = window._currentAvatar || './img/fp.jpg';
+      photoModal.style.display = 'flex';
+    });
+
+    document.getElementById('closeModalBtn').addEventListener('click', () => {
+      photoModal.style.display = 'none';
+    });
+
+    document.getElementById('selectFileBtn').addEventListener('click', () => {
+      fileInput.click();
+    });
+
+    fileInput.addEventListener('change', function () {
+      if (fileInput.files && fileInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          tempDataUrl = e.target.result;
+          modalPreview.src = tempDataUrl;
+        };
+        reader.readAsDataURL(fileInput.files[0]);
+      }
+    });
+
+    document.getElementById('uploadBtn').addEventListener('click', async () => {
+      if (!tempDataUrl || !window._currentUser) return;
+
+      const uploadBtn = document.getElementById('uploadBtn');
+      uploadBtn.textContent = 'Mengunggah...';
+      uploadBtn.disabled = true;
+
+      try {
+        // Upload ke Firebase Storage
+        const storageRef = ref(storage, `avatars/${window._currentUser.uid}.jpg`);
+        await uploadString(storageRef, tempDataUrl, 'data_url');
+        const downloadURL = await getDownloadURL(storageRef);
+
+        // Update Firestore
+        await updateDoc(doc(db, "users", window._currentUser.uid), {
+          photoURL: downloadURL
+        });
+
+        // Update tampilan
+        document.getElementById('profileAvatar').src      = downloadURL;
+        document.getElementById('profileImageHeader').src = downloadURL;
+        window._currentAvatar = downloadURL;
+
+        photoModal.style.display = 'none';
+        uploadBtn.textContent = '⬆️ Unggah';
+        uploadBtn.disabled = false;
+
+      } catch (err) {
+        console.error('Upload gagal:', err);
+        uploadBtn.textContent = '⬆️ Unggah';
+        uploadBtn.disabled = false;
+        alert('Gagal mengunggah foto. Coba lagi.');
+      }
+    });
+
+    // ==============================
+    // DROPDOWN SETTINGS
+    // ==============================
+    const settingsIcon = document.getElementById('settingsIcon');
+    const dropdownMenu = document.getElementById('dropdownMenu');
+
+    settingsIcon.addEventListener('click', () => {
+      dropdownMenu.classList.toggle('show');
+    });
+
+    window.addEventListener('click', (e) => {
+      if (!settingsIcon.contains(e.target) && !dropdownMenu.contains(e.target)) {
+        dropdownMenu.classList.remove('show');
+      }
+    });
+
+  </script>
+</body>
+</html>

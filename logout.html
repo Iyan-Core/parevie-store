@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Logout - Pareffi</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #1a1a2e, #2d2d4e, #1a1a2e);
+      background-size: 300% 300%;
+      animation: gradientShift 8s ease infinite;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .logout-box {
+      background: rgba(255, 255, 255, 0.96);
+      padding: 32px 28px;
+      border-radius: 18px;
+      text-align: center;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      max-width: 380px;
+      width: 90%;
+    }
+
+    .logo-mark {
+      font-size: 28px;
+      color: #c9a84c;
+      letter-spacing: 6px;
+      margin-bottom: 12px;
+    }
+
+    .logout-box h1 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #1a1a2e;
+      letter-spacing: 1px;
+    }
+
+    .logout-box p {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 11px 22px;
+      margin: 6px;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: 0.22s;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-logout {
+      background: #e53935;
+      color: #fff;
+    }
+
+    .btn-logout:hover {
+      background: #c62828;
+      transform: translateY(-2px);
+    }
+
+    .btn-logout:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-cancel {
+      background: #1a1a2e;
+      color: #fff;
+    }
+
+    .btn-cancel:hover {
+      background: #c9a84c;
+      color: #1a1a2e;
+      transform: translateY(-2px);
+    }
+
+    /* Pesan status */
+    #msg {
+      font-size: 13px;
+      color: #c9a84c;
+      margin-top: 12px;
+      min-height: 18px;
+    }
+
+    @media (max-width: 420px) {
+      .logout-box { padding: 22px 16px; border-radius: 14px; }
+      .btn { padding: 10px 14px; font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="logout-box" role="dialog" aria-labelledby="logoutTitle" aria-describedby="logoutDesc">
+    <div class="logo-mark">✦</div>
+    <h1 id="logoutTitle">Keluar dari Akun?</h1>
+    <p id="logoutDesc">Anda akan keluar dari akun Pareffi ini. Pastikan semua aktivitas sudah selesai sebelum melanjutkan.</p>
+
+    <button id="btnLogout" class="btn btn-logout">Logout Sekarang</button>
+    <a href="profile.html" class="btn btn-cancel">Batal</a>
+
+    <div id="msg"></div>
+  </div>
+
+  <!-- FIREBASE -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIza...",
+      authDomain: "pareffi-store.firebaseapp.com",
+      projectId: "pareffi-store",
+      storageBucket: "pareffi-store.firebasestorage.app",
+      messagingSenderId: "673404128533",
+      appId: "1:673404128533:web:325b2f82825e8c4697ed1c"
+    };
+
+    const app  = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const btnLogout = document.getElementById('btnLogout');
+    const msg       = document.getElementById('msg');
+
+    btnLogout.addEventListener('click', async () => {
+      btnLogout.textContent = 'Keluar...';
+      btnLogout.disabled = true;
+      msg.textContent = '';
+
+      try {
+        // 1. Firebase signOut
+        await signOut(auth);
+
+        // 2. Bersihkan localStorage
+        localStorage.removeItem('pareffi_user');
+        localStorage.removeItem('cart');
+
+        // 3. Bersihkan sessionStorage
+        sessionStorage.clear();
+
+        msg.textContent = 'Berhasil logout. Mengalihkan...';
+
+        // 4. Redirect ke login
+        setTimeout(() => {
+          window.location.href = 'login.html';
+        }, 1000);
+
+      } catch (error) {
+        msg.textContent = 'Gagal logout. Coba lagi.';
+        msg.style.color = '#e53935';
+        btnLogout.textContent = 'Logout Sekarang';
+        btnLogout.disabled = false;
+      }
+    });
+
+  </script>
+</body>
+</html>

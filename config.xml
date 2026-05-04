@@ -1,0 +1,25 @@
+// =============================================
+// PAREFFI STORE — Firebase Configuration
+// =============================================
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getStorage } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
+const firebaseConfig = {
+  apiKey: "AIza...",
+  authDomain: "pareffi-store.firebaseapp.com",
+  projectId: "pareffi-store",
+  storageBucket: "pareffi-store.firebasestorage.app",
+  messagingSenderId: "673404128533",
+  appId: "1:673404128533:web:325b2f82825e8c4697ed1c"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+
+// Export semua service yang dibutuhkan
+export const db = getFirestore(app);
+export const auth = getAuth(app);
+export const storage = getStorage(app);

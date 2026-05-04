@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout - Pareffi</title>
+  <link rel="stylesheet" href="./assets/Css/checkout.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+
+  <!-- Toast -->
+  <div id="toast"></div>
+
+  <div class="checkout-container">
+
+    <!-- Header -->
+    <div class="checkout-header">
+      <a href="cart.html" class="back-btn"><i class="fa fa-arrow-left"></i></a>
+      <h1>Konfirmasi Pesanan</h1>
+    </div>
+
+    <!-- Rincian Pesanan dari Cart -->
+    <div class="checkout-section order-summary">
+      <h2>Rincian Pesanan</h2>
+      <table class="order-table">
+        <thead>
+          <tr>
+            <th>Produk</th>
+            <th>Qty</th>
+            <th>Harga</th>
+          </tr>
+        </thead>
+        <tbody id="orderTableBody">
+          <tr><td colspan="3" style="text-align:center;padding:20px;color:#aaa;">
+            Memuat pesanan...
+          </td></tr>
+        </tbody>
+      </table>
+      <div class="total-rows">
+        <div class="total-row">
+          <span>Subtotal</span>
+          <span id="subtotalDisplay">Rp0</span>
+        </div>
+        <div class="total-row">
+          <span>Biaya Kirim</span>
+          <span id="shippingCostDisplay">Rp0</span>
+        </div>
+        <div class="total-row grand-total">
+          <span>Total</span>
+          <span id="totalDisplay">Rp0</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Informasi Pengiriman -->
+    <div class="checkout-section shipping-info">
+      <h2>Informasi Pengiriman</h2>
+
+      <label for="nama">Nama Lengkap</label>
+      <input type="text" id="nama" placeholder="Masukkan nama lengkap">
+      <div class="error-message" id="nama-error"></div>
+
+      <label for="alamat">Alamat Lengkap</label>
+      <textarea id="alamat" placeholder="Masukkan alamat lengkap" rows="3"></textarea>
+      <div class="error-message" id="alamat-error"></div>
+
+      <label for="telepon">Nomor Telepon</label>
+      <input type="tel" id="telepon" placeholder="08xxxxxxxxxx">
+      <div class="error-message" id="telepon-error"></div>
+
+      <label for="email">Email</label>
+      <input type="email" id="email" placeholder="email@kamu.com">
+      <div class="error-message" id="email-error"></div>
+    </div>
+
+    <!-- Ekspedisi -->
+    <div class="checkout-section expedisi-info">
+      <h2>Pilih Ekspedisi</h2>
+
+      <label for="berat">Berat Barang (kg)</label>
+      <input type="number" id="berat" min="0.1" step="0.1" value="0.5">
+      <div class="error-message" id="berat-error"></div>
+
+      <label for="ekspedisi">Ekspedisi</label>
+      <select id="ekspedisi">
+        <option value="">Pilih Ekspedisi</option>
+        <option value="jne">JNE (Rp 12.000/kg)</option>
+        <option value="pos">POS Indonesia (Rp 10.000/kg)</option>
+        <option value="jnt">J&T Express (Rp 11.000/kg)</option>
+        <option value="pcp">PCP (Rp 9.000/kg)</option>
+        <option value="ncs">NCS (Rp 13.000/kg)</option>
+      </select>
+      <div class="error-message" id="ekspedisi-error"></div>
+    </div>
+
+    <!-- Metode Pembayaran -->
+    <div class="checkout-section payment-method">
+      <h2>Metode Pembayaran</h2>
+
+      <label for="pembayaran">Pilih Metode Pembayaran</label>
+      <select id="pembayaran">
+        <option value="">Pilih Metode Pembayaran</option>
+        <option value="transfer">Transfer Bank</option>
+        <option value="gopay">GoPay</option>
+        <option value="ovo">OVO</option>
+        <option value="qris">QRIS</option>
+        <option value="dana">DANA</option>
+        <option value="cod">COD (Bayar di Tempat)</option>
+      </select>
+      <div class="error-message" id="pembayaran-error"></div>
+
+      <!-- Info pembayaran spesifik -->
+      <div id="paymentInfo" style="display:none;" class="payment-info-box"></div>
+    </div>
+
+    <!-- Status Pembayaran -->
+    <div id="paymentStatus" style="display:none;" class="payment-status"></div>
+
+    <!-- Tombol Konfirmasi -->
+    <div class="checkout-actions">
+      <button id="confirmOrderBtn" type="button" disabled>
+        <i class="fa fa-check-circle"></i> Konfirmasi Pesanan
+      </button>
+    </div>
+
+  </div>
+
+  <!-- FIREBASE -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import {
+      getAuth,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      setDoc,
+      deleteDoc,
+      collection,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIza...",
+      authDomain: "pareffi-store.firebaseapp.com",
+      projectId: "pareffi-store",
+      storageBucket: "pareffi-store.firebasestorage.app",
+      messagingSenderId: "673404128533",
+      appId: "1:673404128533:web:325b2f82825e8c4697ed1c"
+    };
+
+    const app  = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db   = getFirestore(app);
+
+    let currentUser = null;
+    let cart        = [];
+    let subtotal    = 0;
+
+    // Ongkir per ekspedisi (per kg)
+    const ongkirRate = {
+      jne: 12000, pos: 10000, jnt: 11000, pcp: 9000, ncs: 13000
+    };
+
+    // Info pembayaran
+    const paymentInfo = {
+      transfer : '🏦 Transfer ke BCA 1234567890 a/n Pareffi Store',
+      gopay    : '💚 GoPay: 0812-3456-7890 (Pareffi Store)',
+      ovo      : '💜 OVO: 0812-3456-7890 (Pareffi Store)',
+      qris     : '🟦 Scan QRIS di kasir atau tunjukkan ke kurir',
+      dana     : '💙 DANA: 0812-3456-7890 (Pareffi Store)',
+      cod      : '🏠 Bayar saat paket tiba di alamat kamu'
+    };
+
+    // ==============================
+    // CEK LOGIN & LOAD DATA
+    // ==============================
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = 'login.html';
+        return;
+      }
+      currentUser = user;
+      await loadCart(user);
+      await prefillUserData(user);
+    });
+
+    // ==============================
+    // LOAD CART
+    // ==============================
+    async function loadCart(user) {
+      try {
+        const docSnap = await getDoc(doc(db, "carts", user.uid));
+        cart = docSnap.exists() ? (docSnap.data().items || []) : [];
+      } catch {
+        cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      }
+
+      if (cart.length === 0) {
+        document.getElementById('orderTableBody').innerHTML =
+          '<tr><td colspan="3" style="text-align:center;padding:20px;color:#aaa;">Keranjang kosong</td></tr>';
+        return;
+      }
+
+      renderOrderTable();
+    }
+
+    // ==============================
+    // RENDER TABEL PESANAN
+    // ==============================
+    function renderOrderTable() {
+      const tbody = document.getElementById('orderTableBody');
+      tbody.innerHTML = '';
+      subtotal = 0;
+
+      cart.forEach(item => {
+        const itemTotal = item.price * item.quantity;
+        subtotal += itemTotal;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${item.name}</td>
+          <td style="text-align:center;">x${item.quantity}</td>
+          <td style="text-align:right;">Rp${Number(itemTotal).toLocaleString('id-ID')}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById('subtotalDisplay').textContent =
+        'Rp' + subtotal.toLocaleString('id-ID');
+      updateTotal();
+    }
+
+    // ==============================
+    // PREFILL DATA USER
+    // ==============================
+    async function prefillUserData(user) {
+      try {
+        const docSnap = await getDoc(doc(db, "users", user.uid));
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          document.getElementById('nama').value    = data.nama   || '';
+          document.getElementById('telepon').value = data.no_hp  || '';
+          document.getElementById('email').value   = user.email  || '';
+          document.getElementById('alamat').value  = data.alamat || '';
+        }
+      } catch (err) {
+        console.error('Gagal prefill:', err);
+      }
+    }
+
+    // ==============================
+    // HITUNG TOTAL
+    // ==============================
+    function updateTotal() {
+      const ekspedisi   = document.getElementById('ekspedisi').value;
+      const berat       = parseFloat(document.getElementById('berat').value) || 0;
+      const shippingCost = ekspedisi ? (ongkirRate[ekspedisi] || 0) * berat : 0;
+      const total        = subtotal + shippingCost;
+
+      document.getElementById('shippingCostDisplay').textContent =
+        'Rp' + shippingCost.toLocaleString('id-ID');
+      document.getElementById('totalDisplay').textContent =
+        'Rp' + total.toLocaleString('id-ID');
+    }
+
+    document.getElementById('ekspedisi').addEventListener('change', updateTotal);
+    document.getElementById('berat').addEventListener('input', updateTotal);
+
+    // ==============================
+    // METODE PEMBAYARAN
+    // ==============================
+    document.getElementById('pembayaran').addEventListener('change', function () {
+      const method    = this.value;
+      const infoBox   = document.getElementById('paymentInfo');
+      const statusDiv = document.getElementById('paymentStatus');
+      const confirmBtn = document.getElementById('confirmOrderBtn');
+
+      if (method && paymentInfo[method]) {
+        infoBox.textContent  = paymentInfo[method];
+        infoBox.style.display = 'block';
+        statusDiv.style.display = 'none';
+        confirmBtn.disabled  = false;
+      } else {
+        infoBox.style.display = 'none';
+        confirmBtn.disabled   = true;
+      }
+    });
+
+    // ==============================
+    // KONFIRMASI PESANAN → SIMPAN KE FIRESTORE
+    // ==============================
+    document.getElementById('confirmOrderBtn').addEventListener('click', async () => {
+      // Reset errors
+      ['nama','alamat','telepon','email','berat','ekspedisi','pembayaran']
+        .forEach(id => {
+          const el = document.getElementById(id + '-error');
+          if (el) el.textContent = '';
+        });
+
+      // Ambil nilai
+      const nama       = document.getElementById('nama').value.trim();
+      const alamat     = document.getElementById('alamat').value.trim();
+      const telepon    = document.getElementById('telepon').value.trim();
+      const email      = document.getElementById('email').value.trim();
+      const berat      = parseFloat(document.getElementById('berat').value) || 0;
+      const ekspedisi  = document.getElementById('ekspedisi').value;
+      const pembayaran = document.getElementById('pembayaran').value;
+
+      // Validasi
+      let valid = true;
+      if (!nama)       { document.getElementById('nama-error').textContent = 'Nama wajib diisi.'; valid = false; }
+      if (!alamat)     { document.getElementById('alamat-error').textContent = 'Alamat wajib diisi.'; valid = false; }
+      if (!telepon)    { document.getElementById('telepon-error').textContent = 'Nomor telepon wajib diisi.'; valid = false; }
+      if (!email)      { document.getElementById('email-error').textContent = 'Email wajib diisi.'; valid = false; }
+      if (!berat || berat <= 0) { document.getElementById('berat-error').textContent = 'Berat harus diisi.'; valid = false; }
+      if (!ekspedisi)  { document.getElementById('ekspedisi-error').textContent = 'Pilih ekspedisi.'; valid = false; }
+      if (!pembayaran) { document.getElementById('pembayaran-error').textContent = 'Pilih metode pembayaran.'; valid = false; }
+      if (!valid) return;
+
+      const btn = document.getElementById('confirmOrderBtn');
+      btn.textContent = 'Memproses...';
+      btn.disabled    = true;
+
+      try {
+        const shippingCost = (ongkirRate[ekspedisi] || 0) * berat;
+        const total        = subtotal + shippingCost;
+
+        // Buat order ID unik
+        const orderId = 'ORD-' + Date.now();
+
+        // Simpan order ke Firestore
+        await setDoc(doc(db, "orders", orderId), {
+          orderId,
+          uid         : currentUser.uid,
+          email       : currentUser.email,
+          items       : cart,
+          shipping    : { nama, alamat, telepon, email, ekspedisi, berat },
+          payment     : { method: pembayaran },
+          subtotal,
+          shippingCost,
+          total,
+          status      : 'pending',
+          createdAt   : serverTimestamp()
+        });
+
+        // Kosongkan cart di Firestore
+        await deleteDoc(doc(db, "carts", currentUser.uid));
+        localStorage.removeItem('cart');
+
+        // Tampilkan sukses
+        const statusDiv = document.getElementById('paymentStatus');
+        statusDiv.style.display = 'block';
+        statusDiv.className = 'payment-status success';
+        statusDiv.innerHTML = `
+          <i class="fa fa-check-circle" style="font-size:32px;display:block;margin-bottom:10px;"></i>
+          <strong>Pesanan Berhasil!</strong><br>
+          ID Pesanan: <strong>${orderId}</strong><br>
+          <small>Silakan lakukan pembayaran sesuai metode yang dipilih.</small>
+        `;
+
+        // Sembunyikan form
+        document.querySelectorAll('.checkout-section.shipping-info, .checkout-section.expedisi-info, .checkout-section.payment-method')
+          .forEach(el => el.style.display = 'none');
+        btn.style.display = 'none';
+
+        // Redirect ke profil setelah 4 detik
+        setTimeout(() => window.location.href = 'profile.html', 4000);
+
+      } catch (err) {
+        console.error('Gagal buat order:', err);
+        showToast('❌ Gagal memproses pesanan. Coba lagi.');
+        btn.innerHTML = '<i class="fa fa-check-circle"></i> Konfirmasi Pesanan';
+        btn.disabled  = false;
+      }
+    });
+
+    // ==============================
+    // TOAST
+    // ==============================
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+
+  </script>
+</body>
+</html>
