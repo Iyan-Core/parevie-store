@@ -20,18 +20,6 @@ jobs:
         with:
           gradle-version: '8.2'
 
-      - name: DEBUG - Lihat struktur folder
-        run: ls -la
-
-      - name: DEBUG - Lihat isi settings.gradle
-        run: cat settings.gradle
-
-      - name: DEBUG - Lihat folder app
-        run: ls -la app/ || echo "FOLDER APP TIDAK ADA!"
-
-      - name: DEBUG - Lihat projects Gradle
-        run: gradle projects
-
       - name: Build APK
         run: gradle :app:assembleDebug
 
