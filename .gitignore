@@ -2,4 +2,7 @@
 *.o
 
 # Ada Library Information
-*.ali
+google-services.json
+*.keystore
+*.jks
+local.properties
