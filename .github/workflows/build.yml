@@ -31,11 +31,26 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x gradlew
 
-      - name: Build Debug APK
-        run: ./gradlew assembleDebug
+      # (Opsional) Buat keystore debug jika belum ada untuk testing
+      - name: Create debug keystore (if missing)
+        run: |
+          mkdir -p keystore
+          keytool -genkey -v -keystore keystore/debug.keystore -alias debug -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Debug, OU=Debug, O=Debug, L=Debug, ST=Debug, C=ID" -storepass android -keypass android
 
-      - name: Upload APK Artifact
+      # Untuk release signing, set environment variables dari GitHub Secrets
+      - name: Set signing environment variables
+        run: |
+          echo "KEYSTORE_PATH=${{ secrets.KEYSTORE_PATH }}" >> $GITHUB_ENV
+          echo "KEYSTORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}" >> $GITHUB_ENV
+          echo "KEY_ALIAS=${{ secrets.KEY_ALIAS }}" >> $GITHUB_ENV
+          echo "KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" >> $GITHUB_ENV
+        # Jika tidak punya secrets, hapus step ini dan signingConfig akan fallback ke debug keystore
+
+      - name: Build Release APK
+        run: ./gradlew assembleRelease
+
+      - name: Upload Release APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: parevie-store-debug
-          path: app/build/outputs/apk/debug/*.apk
+          name: parevie-store-release
+          path: app/build/outputs/apk/release/*.apk
