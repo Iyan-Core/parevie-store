@@ -3,41 +3,39 @@ name: Build Android APK
 on:
   push:
     branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-java@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      - uses: gradle/actions/setup-gradle@v3
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v3
         with:
           gradle-version: '8.2'
 
-      - name: Fix resource folder
-        run: |
-          if [ -d "app/src/main/res/mipmap_hdpi" ]; then
-            mv app/src/main/res/mipmap_hdpi app/src/main/res/mipmap-hdpi
-          fi
+      - name: Generate Gradle Wrapper
+        run: gradle wrapper --gradle-version 8.2 --distribution-type all
 
-      - name: Decode Keystore
-        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > app/pareviestore.keystore
+      - name: Make gradlew executable
+        run: chmod +x gradlew
 
-      - name: Build Signed APK
-        run: gradle :app:assembleRelease
-        env:
-          ANDROID_HOME: /usr/local/lib/android/sdk
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
         with:
-          name: pareviestore
-          path: app/build/outputs/apk/release/pareviestore.apk
+          name: parevie-store-debug
+          path: app/build/outputs/apk/debug/*.apk
