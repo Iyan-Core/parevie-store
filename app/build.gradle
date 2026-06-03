@@ -23,12 +23,13 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-}
 
-applicationVariants.all { variant ->
-    if (variant.name == "debug") {
-        variant.outputs.all {
-            outputFileName = "parevie-store.apk"
+    // Perbaikan: applicationVariants harus di dalam blok android
+    applicationVariants.all { variant ->
+        if (variant.name == "debug") {
+            variant.outputs.all {
+                outputFileName = "parevie-store.apk"
+            }
         }
     }
 }
