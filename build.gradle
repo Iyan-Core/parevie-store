@@ -4,7 +4,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.5.0' // gunakan versi terbaru
+        classpath 'com.android.tools.build:gradle:8.1.0'
     }
 }
 
@@ -13,8 +13,4 @@ allprojects {
         google()
         mavenCentral()
     }
-}
-
-tasks.register('clean', Delete) {
-    delete rootProject.buildDir
 }
