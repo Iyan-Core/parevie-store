@@ -8,16 +8,17 @@ android {
         applicationId "com.iyan.pareviestore"
         minSdk 21
         targetSdk 34
-        versionCode 2                     // Naikkan dari 1 menjadi 2 agar bisa update
+        versionCode 2          // ← naikkan setiap rilis
         versionName "1.1"
     }
 
     signingConfigs {
         release {
-            storeFile file(System.getenv("KEYSTORE_PATH") ?: "keystore/debug.keystore")
-            storePassword System.getenv("KEYSTORE_PASSWORD")
-            keyAlias System.getenv("KEY_ALIAS")
-            keyPassword System.getenv("KEY_PASSWORD")
+            // Menggunakan debug keystore yang dibuat di root proyek
+            storeFile rootProject.file("keystore/debug.keystore")
+            storePassword "android"
+            keyAlias "debug"
+            keyPassword "android"
         }
     }
 
@@ -25,7 +26,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release   // ← WAJIB: gunakan signingConfig release
+            signingConfig signingConfigs.release
         }
     }
 
@@ -34,7 +35,6 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    // Ubah nama output APK (opsional)
     applicationVariants.all { variant ->
         variant.outputs.all {
             outputFileName = "parevie-store-${variant.versionName}.apk"
