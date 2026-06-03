@@ -30,6 +30,12 @@ repositories {
     mavenCentral()
 }
 
+android.applicationVariants.all { variant ->
+    variant.outputs.all {
+        outputFileName = "pareviestore.apk"
+    }
+}
+
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
 }
