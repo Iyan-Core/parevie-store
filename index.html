@@ -5,17 +5,63 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pareffi Store</title>
   <link rel="stylesheet" href="./css/index.css">
+  <link rel="stylesheet" href="./css/El.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+
+  <!-- Toast -->
+  <div id="_toast" style="position:fixed;bottom:80px;left:50%;transform:translateX(-50%);
+    background:#1a1a2e;color:#fff;padding:10px 24px;border-radius:20px;font-size:13px;
+    display:none;z-index:99999;white-space:nowrap;"></div>
+
+  <!-- Modal Detail Produk -->
+  <div id="productModal" style="display:none;position:fixed;inset:0;
+    background:rgba(0,0,0,0.6);z-index:9998;align-items:flex-end;justify-content:center;">
+    <div style="background:white;border-radius:20px 20px 0 0;padding:24px 20px;
+      width:100%;max-width:480px;max-height:85vh;overflow-y:auto;animation:slideUp 0.3s ease;">
+      <button onclick="document.getElementById('productModal').style.display='none'"
+        style="float:right;background:none;border:none;font-size:22px;cursor:pointer;color:#888;">✕</button>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
   <style>
-    /* Cart icon */
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to   { transform: translateY(0); }
+    }
+    /* HANYA fix cart & chat — tidak ubah yang lain */
+    #chatButton {
+      position: fixed !important;
+      bottom: 80px !important;
+      right: 16px !important;
+      z-index: 99999 !important;
+      background: #1a1a2e;
+      border-radius: 50%;
+      width: 54px;
+      height: 54px;
+      display: flex !important;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      border: 2px solid #c9a84c;
+      cursor: pointer;
+    }
+    #chatButton img {
+      width: 26px !important;
+      height: 26px !important;
+      display: block !important;
+      filter: brightness(0) invert(1);
+    }
+    .cart-icon { position: relative; flex-shrink: 0; }
     .cart-icon a {
       display: flex;
       align-items: center;
       text-decoration: none;
       position: relative;
-      z-index: 10;
     }
     .cart-icon img {
       width: 30px !important;
@@ -25,8 +71,8 @@
     }
     #cart-count {
       position: absolute;
-      top: -8px;
-      right: -10px;
+      top: -6px;
+      right: -8px;
       background: #e63946;
       color: white;
       font-size: 10px;
@@ -38,168 +84,53 @@
       align-items: center;
       justify-content: center;
       padding: 0 3px;
-      z-index: 11;
+      z-index: 2;
     }
-
-    /* Chat button */
-    #chatButton {
-      position: fixed;
-      bottom: 80px;
-      right: 16px;
-      z-index: 9999 !important;
-      background: #1a1a2e;
-      border-radius: 50%;
-      width: 54px;
-      height: 54px;
-      display: flex !important;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.35);
-      border: 2px solid #c9a84c;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-    #chatButton img {
-      width: 26px !important;
-      height: 26px !important;
-      display: block !important;
-      filter: brightness(0) invert(1);
-    }
-    #chatButton:hover { transform: scale(1.08); }
-
-    /* Rating bintang */
-    .star-rating { color: #c9a84c; font-size: 11px; }
-
-    /* Product card klik area */
-    .product-item a { cursor: pointer; }
-
-    /* Modal detail produk */
-    #productModal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.6);
-      z-index: 500;
-      align-items: flex-end;
-      justify-content: center;
-    }
-    #productModal.show { display: flex; }
-    .modal-content {
-      background: white;
-      border-radius: 20px 20px 0 0;
-      padding: 24px 20px;
-      width: 100%;
-      max-width: 480px;
-      max-height: 85vh;
-      overflow-y: auto;
-      animation: slideUp 0.3s ease;
-    }
-    @keyframes slideUp {
-      from { transform: translateY(100%); }
-      to   { transform: translateY(0); }
-    }
-    .modal-close {
-      float: right;
-      background: none;
-      border: none;
-      font-size: 22px;
-      cursor: pointer;
-      color: #888;
-    }
-    .modal-img {
-      width: 100%;
-      aspect-ratio: 1;
-      object-fit: cover;
-      border-radius: 12px;
-      margin: 12px 0;
-    }
-    .modal-name { font-size: 18px; font-weight: 700; color: #1a1a2e; }
-    .modal-price { font-size: 20px; font-weight: 700; color: #c9a84c; margin: 6px 0; }
-    .modal-desc { font-size: 13px; color: #666; line-height: 1.6; margin: 8px 0; }
-    .modal-info { display: flex; gap: 12px; flex-wrap: wrap; margin: 10px 0; }
-    .modal-badge {
-      padding: 4px 12px;
+    /* Gender badge pojok kanan atas card */
+    .product-item { position: relative; }
+    .gender-badge {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: rgba(26,26,46,0.75);
+      color: white;
       border-radius: 20px;
+      padding: 2px 8px;
       font-size: 11px;
       font-weight: 600;
-      background: #f7f5f0;
-      border: 1px solid #e0ddd6;
-      color: #2c2c2c;
+      z-index: 2;
+      backdrop-filter: blur(4px);
     }
-    .modal-btn {
-      width: 100%;
-      padding: 14px;
-      background: #1a1a2e;
-      color: white;
-      border: none;
-      border-radius: 12px;
-      font-size: 15px;
-      font-weight: 700;
-      cursor: pointer;
-      margin-top: 16px;
-      transition: background 0.2s;
-    }
-    .modal-btn:hover { background: #c9a84c; color: #1a1a2e; }
-
-    /* Toast */
-    #_toast {
-      position: fixed;
-      bottom: 80px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #1a1a2e;
-      color: white;
-      padding: 10px 24px;
-      border-radius: 20px;
-      font-size: 13px;
-      display: none;
-      z-index: 999;
-      white-space: nowrap;
-    }
+    /* Rating */
+    .star-rating { color: #c9a84c; font-size: 11px; letter-spacing: 1px; }
   </style>
-</head>
-<body>
 
-  <!-- Toast -->
-  <div id="_toast"></div>
-
-  <!-- Modal Detail Produk -->
-  <div id="productModal">
-    <div class="modal-content">
-      <button class="modal-close" id="modalClose">✕</button>
-      <div id="modalBody"></div>
-    </div>
-  </div>
-
-  <!-- Tombol Chat — pakai PNG -->
+  <!-- Tombol Chat — PNG asli -->
   <div id="chatButton" onclick="window.location.href='chat.html'">
     <img src="./img/chat.png" alt="Chat">
   </div>
 
   <div class="page-container">
-
-    <!-- HEADER -->
     <header class="sticky-header">
       <div class="header-container">
 
         <!-- Profil -->
         <div class="profile-icon" id="profileIconContainer">
-          <a href="./profile.html">
-            <img id="profileImageHeader" src="./img/avatar.png" alt="Profil"
-              onerror="this.style.display='none'">
+          <a href="./profil.html">
+            <img id="profileImageHeader" src="./img/avatar.png" alt="Profil">
           </a>
-          <span id="usernameDisplay">Login</span>
+          <span id="usernameDisplay">User</span>
         </div>
 
         <!-- Search -->
         <div class="search-bar">
           <input type="text" placeholder="Cari..." id="searchInput">
           <button type="submit" id="searchButton">
-            <i class="fas fa-search" style="color:rgba(255,255,255,0.7);font-size:14px;"></i>
+            <img src="./img/search.png" alt="search" width="16" height="16">
           </button>
         </div>
 
-        <!-- Cart — pakai PNG -->
+        <!-- Cart — PNG asli -->
         <div class="cart-icon">
           <a href="./cart.html">
             <img src="./img/cart.png" alt="Cart">
@@ -213,7 +144,7 @@
     <div class="content">
       <div class="sticky-elements">
 
-        <!-- Banner Promo -->
+        <!-- Banner -->
         <div class="ad-banner-container" id="adBannerContainer">
           <div class="ad-banner">
             <h2>Promo Spesial!</h2>
@@ -272,53 +203,50 @@
 
       <!-- Marquee -->
       <div class="marquee">
-        <span>✦ Selamat Datang di toko Pareffi ! ✦ Parfum pilihan terbaik untuk kamu ✦</span>
+        <span>Selamat Datang di toko Pareffi !</span>
       </div>
 
       <!-- Best Seller -->
       <div class="product-wrapper">
         <h2 class="product-container-title">BEST SELLER</h2>
         <div class="product-container" id="productContainer">
-          <p style="text-align:center;padding:30px;color:#aaa;grid-column:span 2;">
-            <i class="fas fa-spinner fa-spin"></i> Memuat produk...
-          </p>
+          <p style="text-align:center;padding:30px;color:#aaa;">Memuat produk...</p>
         </div>
       </div>
 
-      <!-- Tombol ke Store -->
       <div id="nextButton">
-        <a href="./store.html">Lihat Semua Produk →</a>
+        <a href="./store.html">Selanjutnya</a>
       </div>
 
     </div>
   </div>
 
-  <!-- Footer -->
+  <!-- Footer — PNG asli seperti sebelumnya -->
   <footer class="sticky-footer">
     <div class="footer-container">
       <nav class="footer-menu">
         <ul>
           <li>
             <a href="index.html">
-              <i class="fas fa-home"></i>
+              <img src="./img/home.png" alt="Beranda" width="28">
               <span>Beranda</span>
             </a>
           </li>
           <li>
             <a href="store.html">
-              <i class="fas fa-store"></i>
+              <img src="./img/store.png" alt="Store" width="28">
               <span>Store</span>
             </a>
           </li>
           <li>
             <a href="artikel.html">
-              <i class="fas fa-newspaper"></i>
+              <img src="./img/article.png" alt="Artikel" width="28">
               <span>Artikel</span>
             </a>
           </li>
           <li>
-            <a href="profil.html">
-              <i class="fas fa-user"></i>
+            <a href="./profil.html">
+              <img src="./img/profil.png" alt="Profil" width="28">
               <span>Profil</span>
             </a>
           </li>
@@ -327,23 +255,18 @@
     </div>
   </footer>
 
-  <!-- Service Worker -->
   <script>
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("service_worker.js");
     }
   </script>
 
-  <!-- FIREBASE -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
     import {
-      getAuth, onAuthStateChanged
-    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import {
-      getFirestore,
-      collection, query, where, getDocs,
-      doc, getDoc, setDoc, serverTimestamp
+      getFirestore, collection, query, where,
+      getDocs, doc, getDoc, setDoc, serverTimestamp
     } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -363,218 +286,171 @@
     let cart        = JSON.parse(localStorage.getItem('cart') || '[]');
     let allProducts = [];
 
-    // ==============================
     // CEK AUTH
-    // ==============================
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         currentUser = user;
         try {
           const snap = await getDoc(doc(db, "users", user.uid));
           if (snap.exists()) {
-            const data = snap.data();
-            document.getElementById('usernameDisplay').textContent = data.nama || user.displayName || 'User';
-            if (data.photoURL) {
-              document.getElementById('profileImageHeader').src = data.photoURL;
-            }
+            const d = snap.data();
+            document.getElementById('usernameDisplay').textContent = d.nama || user.displayName || 'User';
+            if (d.photoURL) document.getElementById('profileImageHeader').src = d.photoURL;
           }
-        } catch (e) {}
-        await loadCartFromFirestore(user.uid);
+        } catch(e) {}
+        try {
+          const cSnap = await getDoc(doc(db, "carts", user.uid));
+          if (cSnap.exists()) {
+            cart = cSnap.data().items || [];
+            localStorage.setItem('cart', JSON.stringify(cart));
+          }
+        } catch(e) {}
       } else {
         document.getElementById('usernameDisplay').textContent = 'Login';
-        updateCartCount();
-      }
-    });
-
-    async function loadCartFromFirestore(uid) {
-      try {
-        const snap = await getDoc(doc(db, "carts", uid));
-        if (snap.exists()) {
-          cart = snap.data().items || [];
-          localStorage.setItem('cart', JSON.stringify(cart));
-        }
-      } catch (e) {
-        cart = JSON.parse(localStorage.getItem('cart') || '[]');
       }
       updateCartCount();
-    }
+    });
 
     function updateCartCount() {
-      const total = cart.reduce((s, i) => s + i.quantity, 0);
-      document.getElementById('cart-count').textContent = total;
+      document.getElementById('cart-count').textContent =
+        cart.reduce((s, i) => s + i.quantity, 0);
     }
 
-    // ==============================
     // LOAD BEST SELLER
-    // ==============================
     async function loadBestSellers() {
       const container = document.getElementById('productContainer');
       try {
-        const q    = query(collection(db, "products"), where("bestSeller", "==", true));
-        const snap = await getDocs(q);
+        let snap = await getDocs(query(collection(db, "products"), where("bestSeller", "==", true)));
+        if (snap.empty) snap = await getDocs(collection(db, "products"));
 
-        if (snap.empty) {
-          // Fallback ambil semua produk jika tidak ada bestSeller
-          const all  = await getDocs(collection(db, "products"));
-          allProducts = [];
-          all.forEach(d => allProducts.push({ id: d.id, ...d.data() }));
-        } else {
-          allProducts = [];
-          snap.forEach(d => allProducts.push({ id: d.id, ...d.data() }));
-        }
-
-        renderProducts(allProducts, container);
-      } catch (err) {
-        container.innerHTML = '<p style="text-align:center;color:#aaa;padding:30px;grid-column:span 2;">Gagal memuat produk.</p>';
+        allProducts = [];
+        snap.forEach(d => allProducts.push({ id: d.id, ...d.data() }));
+        renderProducts(allProducts);
+      } catch(e) {
+        container.innerHTML = '<p style="text-align:center;color:#aaa;padding:30px;">Gagal memuat produk.</p>';
       }
     }
 
-    // ==============================
-    // RENDER PRODUK
-    // ==============================
-    function renderProducts(products, container) {
+    // RENDER PRODUK — struktur card sama seperti aslinya
+    function renderProducts(products) {
+      const container = document.getElementById('productContainer');
       container.innerHTML = '';
 
-      if (products.length === 0) {
-        container.innerHTML = '<p style="text-align:center;color:#aaa;padding:30px;grid-column:span 2;">Belum ada produk.</p>';
+      if (!products.length) {
+        container.innerHTML = '<p style="text-align:center;color:#aaa;padding:30px;">Belum ada produk.</p>';
         return;
       }
 
       products.forEach(p => {
-        // Ambil gambar pertama yang valid (URL lengkap, bukan dummy)
-        const images = (p.images || []).filter(img =>
-          img && img.startsWith('http')
-        );
-        const image = images[0] || '';
+        const images = (p.images || []).filter(img => img && img.startsWith('http'));
+        const image  = images[0] || '';
+        const stars  = '★'.repeat(Math.round(p.rating || 0)) + '☆'.repeat(5 - Math.round(p.rating || 0));
 
-        // Rating bintang
-        const rating    = p.rating || 0;
-        const stars     = '★'.repeat(Math.round(rating)) + '☆'.repeat(5 - Math.round(rating));
-        const genderIcon = p.gender === 'male' || p.gender === 'male and female'
-          ? '♂' : '♀';
+        // Label gender
+        let genderLabel = '';
+        if (p.gender === 'male') genderLabel = '♂ Pria';
+        else if (p.gender === 'female') genderLabel = '♀ Wanita';
+        else if (p.gender) genderLabel = '⚥ Unisex';
 
-        const item = document.createElement('div');
-        item.className = 'product-item';
-        item.innerHTML = `
-          <div onclick="showDetail('${p.id}')" style="cursor:pointer;flex:1;display:flex;flex-direction:column;">
+        const div = document.createElement('div');
+        div.classList.add('product-item');
+        div.innerHTML = `
+          ${genderLabel ? `<span class="gender-badge">${genderLabel}</span>` : ''}
+          <a href="#" onclick="showDetail('${p.id}');return false;">
             <p class="variant-title">${p.name}</p>
-            ${image
-              ? `<img src="${image}" alt="${p.name}" onerror="this.parentElement.style.display='none'" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;background:#eee;margin-bottom:8px;">`
-              : `<div style="width:100%;aspect-ratio:1;background:#f0ede8;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;font-size:32px;">🧴</div>`
-            }
+            <img src="${image}" alt="${p.name}"
+              onerror="this.src='./img/no-image.png'"
+              style="${!image ? 'display:none' : ''}">
             <p>${p.name} ${p.size ? p.size + 'ml' : ''}</p>
-            <hr style="border:none;border-top:1px solid #e0ddd6;margin:6px 0;">
-            <p style="font-weight:700;color:#1a1a2e;">Rp ${Number(p.price).toLocaleString('id-ID')}</p>
+            <hr>
+            <p>Harga: Rp ${Number(p.price).toLocaleString('id-ID')}</p>
             <div style="display:flex;align-items:center;justify-content:space-between;margin-top:4px;">
               <span class="star-rating">${stars}</span>
-              <span style="font-size:11px;color:#aaa;">${genderIcon} · Terjual ${p.sold || 0}</span>
+              <span style="font-size:10px;color:#aaa;">Terjual ${p.sold || 0}</span>
             </div>
-          </div>
+          </a>
           <button class="add-to-cart-button"
             data-id="${p.id}"
             data-name="${p.name}"
             data-price="${p.price}"
             data-image="${image}">
-            <i class="fas fa-cart-plus"></i> Keranjang
+            Tambah ke Keranjang
           </button>
         `;
-        container.appendChild(item);
+        container.appendChild(div);
       });
 
-      // Bind tombol cart
       container.querySelectorAll('.add-to-cart-button').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          addToCart(btn.dataset.id, btn.dataset.name, parseFloat(btn.dataset.price), btn.dataset.image);
-        });
+        btn.addEventListener('click', () =>
+          addToCart(btn.dataset.id, btn.dataset.name, parseFloat(btn.dataset.price), btn.dataset.image)
+        );
       });
     }
 
-    // ==============================
-    // MODAL DETAIL PRODUK
-    // ==============================
+    // MODAL DETAIL
     window.showDetail = function(id) {
       const p = allProducts.find(x => x.id === id);
       if (!p) return;
-
       const images = (p.images || []).filter(img => img && img.startsWith('http'));
       const image  = images[0] || '';
-      const rating = p.rating || 0;
-      const stars  = '★'.repeat(Math.round(rating)) + '☆'.repeat(5 - Math.round(rating));
+      const stars  = '★'.repeat(Math.round(p.rating || 0)) + '☆'.repeat(5 - Math.round(p.rating || 0));
 
       document.getElementById('modalBody').innerHTML = `
-        ${image ? `<img src="${image}" class="modal-img" alt="${p.name}">` : ''}
-        <div class="modal-name">${p.name}</div>
-        <div class="modal-price">Rp ${Number(p.price).toLocaleString('id-ID')}</div>
-        <div style="color:#c9a84c;font-size:14px;margin:4px 0;">${stars} <span style="color:#888;font-size:12px;">(${rating}/5)</span></div>
-        <div class="modal-info">
-          <span class="modal-badge">📦 ${p.size || '-'}ml</span>
-          <span class="modal-badge">🌸 ${p.aroma || '-'}</span>
-          <span class="modal-badge">👤 ${p.category || '-'}</span>
-          <span class="modal-badge">🛒 Terjual ${p.sold || 0}</span>
-          <span class="modal-badge">📦 Stok ${p.stock || 0}</span>
+        ${image ? `<img src="${image}" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:12px;margin:12px 0;">` : ''}
+        <div style="font-size:18px;font-weight:700;color:#1a1a2e;">${p.name}</div>
+        <div style="font-size:20px;font-weight:700;color:#c9a84c;margin:6px 0;">Rp ${Number(p.price).toLocaleString('id-ID')}</div>
+        <div style="color:#c9a84c;margin:4px 0;">${stars} <span style="color:#888;font-size:12px;">(${p.rating || 0}/5)</span></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0;">
+          <span style="padding:4px 12px;border-radius:20px;font-size:11px;background:#f7f5f0;border:1px solid #e0ddd6;">📦 ${p.size || '-'}ml</span>
+          <span style="padding:4px 12px;border-radius:20px;font-size:11px;background:#f7f5f0;border:1px solid #e0ddd6;">🌸 ${p.aroma || '-'}</span>
+          <span style="padding:4px 12px;border-radius:20px;font-size:11px;background:#f7f5f0;border:1px solid #e0ddd6;">👤 ${p.category || '-'}</span>
+          <span style="padding:4px 12px;border-radius:20px;font-size:11px;background:#f7f5f0;border:1px solid #e0ddd6;">🛒 Terjual ${p.sold || 0}</span>
+          <span style="padding:4px 12px;border-radius:20px;font-size:11px;background:#f7f5f0;border:1px solid #e0ddd6;">📦 Stok ${p.stock || 0}</span>
         </div>
-        <div class="modal-desc">${p.desc || 'Tidak ada deskripsi.'}</div>
-        <button class="modal-btn" onclick="addToCart('${p.id}','${p.name}',${p.price},'${image}');document.getElementById('productModal').classList.remove('show');">
-          <i class="fas fa-cart-plus"></i> Tambah ke Keranjang
+        <p style="font-size:13px;color:#666;line-height:1.6;">${p.desc || 'Tidak ada deskripsi.'}</p>
+        <button onclick="addToCartFromModal('${p.id}','${p.name}',${p.price},'${image}')"
+          style="width:100%;padding:14px;background:#1a1a2e;color:white;border:none;
+          border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;margin-top:16px;">
+          Tambah ke Keranjang
         </button>
       `;
-
-      document.getElementById('productModal').classList.add('show');
+      document.getElementById('productModal').style.display = 'flex';
     };
 
-    document.getElementById('modalClose').addEventListener('click', () => {
-      document.getElementById('productModal').classList.remove('show');
-    });
+    window.addToCartFromModal = function(id, name, price, image) {
+      addToCart(id, name, price, image);
+      document.getElementById('productModal').style.display = 'none';
+    };
 
-    document.getElementById('productModal').addEventListener('click', (e) => {
-      if (e.target === document.getElementById('productModal')) {
-        document.getElementById('productModal').classList.remove('show');
-      }
-    });
-
-    // ==============================
     // ADD TO CART
-    // ==============================
     async function addToCart(id, name, price, image) {
       const existing = cart.find(i => i.id === id);
       if (existing) existing.quantity++;
       else cart.push({ id, name, price, image, quantity: 1 });
-
       localStorage.setItem('cart', JSON.stringify(cart));
       updateCartCount();
-
       if (currentUser) {
         try {
-          await setDoc(doc(db, "carts", currentUser.uid), {
-            items: cart, updatedAt: serverTimestamp()
-          });
-        } catch (e) {}
+          await setDoc(doc(db, "carts", currentUser.uid), { items: cart, updatedAt: serverTimestamp() });
+        } catch(e) {}
       }
-
       showToast('✅ Ditambahkan ke keranjang');
     }
 
-    // ==============================
     // SEARCH
-    // ==============================
-    document.getElementById('searchInput').addEventListener('input', function () {
+    document.getElementById('searchInput').addEventListener('input', function() {
       const kw = this.value.toLowerCase();
-      const filtered = allProducts.filter(p =>
+      renderProducts(allProducts.filter(p =>
         p.name.toLowerCase().includes(kw) ||
         (p.aroma || '').toLowerCase().includes(kw)
-      );
-      renderProducts(filtered, document.getElementById('productContainer'));
+      ));
     });
-
-    document.getElementById('searchButton').addEventListener('click', (e) => {
+    document.getElementById('searchButton').addEventListener('click', e => {
       e.preventDefault();
       document.getElementById('searchInput').dispatchEvent(new Event('input'));
     });
 
-    // ==============================
     // AUTO SCROLL BANNER
-    // ==============================
     let scrollPos = 0;
     setInterval(() => {
       const b = document.getElementById('adBannerContainer');
@@ -584,9 +460,6 @@
       b.scrollTo({ left: scrollPos, behavior: 'smooth' });
     }, 3000);
 
-    // ==============================
-    // TOAST
-    // ==============================
     function showToast(msg) {
       const t = document.getElementById('_toast');
       t.textContent = msg;
@@ -594,11 +467,7 @@
       setTimeout(() => t.style.display = 'none', 2000);
     }
 
-    // ==============================
-    // MULAI
-    // ==============================
     loadBestSellers();
-
   </script>
 </body>
 </html>
