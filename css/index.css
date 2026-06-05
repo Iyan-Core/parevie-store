@@ -24,22 +24,18 @@ body {
   min-height: 100vh;
 }
 
-/* =============================================
-   PAGE CONTAINER
-   ============================================= */
+/* PAGE CONTAINER */
 .page-container {
   max-width: 480px;
   margin: 0 auto;
   background: var(--white);
   min-height: 100vh;
   position: relative;
-  padding-bottom: 70px;
   z-index: 1;
+  padding-bottom: 70px;
 }
 
-/* =============================================
-   STICKY HEADER
-   ============================================= */
+/* HEADER */
 .sticky-header {
   position: sticky;
   top: 0;
@@ -55,9 +51,7 @@ body {
   padding: 10px 14px;
 }
 
-/* =============================================
-   PROFILE ICON
-   ============================================= */
+/* PROFILE ICON */
 .profile-icon {
   display: flex;
   align-items: center;
@@ -83,9 +77,7 @@ body {
   text-overflow: ellipsis;
 }
 
-/* =============================================
-   SEARCH BAR
-   ============================================= */
+/* SEARCH BAR */
 .search-bar {
   flex: 1;
   display: flex;
@@ -108,9 +100,7 @@ body {
   outline: none;
 }
 
-.search-bar input::placeholder {
-  color: rgba(255,255,255,0.5);
-}
+.search-bar input::placeholder { color: rgba(255,255,255,0.5); }
 
 .search-bar button {
   background: transparent;
@@ -126,12 +116,11 @@ body {
   opacity: 0.8;
 }
 
-/* =============================================
-   CART ICON
-   ============================================= */
+/* CART ICON */
 .cart-icon {
   position: relative;
   flex-shrink: 0;
+  z-index: 101;
 }
 
 .cart-icon a {
@@ -142,6 +131,9 @@ body {
 }
 
 .cart-icon img {
+  width: 30px !important;
+  height: 30px !important;
+  display: block !important;
   filter: brightness(0) invert(1);
 }
 
@@ -160,11 +152,10 @@ body {
   align-items: center;
   justify-content: center;
   padding: 0 3px;
+  z-index: 102;
 }
 
-/* =============================================
-   AD BANNER
-   ============================================= */
+/* AD BANNER */
 .ad-banner-container {
   display: flex;
   overflow-x: auto;
@@ -172,7 +163,6 @@ body {
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
 }
-
 .ad-banner-container::-webkit-scrollbar { display: none; }
 
 .ad-banner {
@@ -208,17 +198,10 @@ body {
   font-size: 12px;
   font-weight: 700;
   text-decoration: none;
-  letter-spacing: 0.5px;
   transition: background 0.2s;
 }
 
-.ad-banner .button:hover {
-  background: var(--accent-light);
-}
-
-/* =============================================
-   COSMETIC ICON (AROMA)
-   ============================================= */
+/* COSMETIC ICON */
 .cosmetic-icon-outer-container {
   display: flex;
   overflow-x: auto;
@@ -227,7 +210,6 @@ body {
   background: var(--white);
   border-bottom: 1px solid var(--border);
 }
-
 .cosmetic-icon-outer-container::-webkit-scrollbar { display: none; }
 
 .cosmetic-icon-set {
@@ -261,30 +243,12 @@ body {
   transition: all 0.2s;
 }
 
-.cosmetic-icon-item i {
-  font-size: 16px;
-  color: var(--accent);
-}
+.cosmetic-icon-item i { font-size: 16px; color: var(--accent); }
+.cosmetic-icon-item span { text-align: center; font-size: 9px; }
+.cosmetic-icon-item:hover { background: var(--primary); color: var(--white); }
+.cosmetic-icon-item:hover i { color: var(--accent); }
 
-.cosmetic-icon-item:hover {
-  background: var(--primary);
-  color: var(--white);
-  border-color: var(--primary);
-}
-
-.cosmetic-icon-item:hover i {
-  color: var(--accent);
-}
-
-.cosmetic-icon-item span {
-  text-align: center;
-  line-height: 1.2;
-  font-size: 9px;
-}
-
-/* =============================================
-   MARQUEE
-   ============================================= */
+/* MARQUEE */
 .marquee {
   background: var(--accent);
   color: var(--primary);
@@ -307,12 +271,8 @@ body {
   to   { transform: translateX(-100%); }
 }
 
-/* =============================================
-   PRODUCT WRAPPER
-   ============================================= */
-.product-wrapper {
-  padding: 16px 12px;
-}
+/* PRODUCT WRAPPER */
+.product-wrapper { padding: 16px 12px; }
 
 .product-container-title {
   font-size: 13px;
@@ -338,15 +298,14 @@ body {
   border-radius: 2px;
 }
 
-/* =============================================
-   PRODUCT GRID
-   ============================================= */
+/* PRODUCT GRID */
 .product-container {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 12px;
 }
 
+/* PRODUCT CARD */
 .product-item {
   background: var(--white);
   border-radius: var(--radius);
@@ -355,9 +314,9 @@ body {
   border: 1px solid var(--border);
   display: flex;
   flex-direction: column;
+  position: relative;
   transition: transform 0.2s;
 }
-
 .product-item:active { transform: scale(0.97); }
 
 .product-item a {
@@ -424,152 +383,26 @@ body {
   border-top: 1px solid var(--border);
   font-family: inherit;
 }
+.add-to-cart-button:hover { background: var(--accent); color: var(--primary); }
 
-.add-to-cart-button:hover,
-.add-to-cart-button:active {
-  background: var(--accent);
-  color: var(--primary);
-}
-
-/* =============================================
-   NEXT BUTTON
-   ============================================= */
+/* NEXT BUTTON */
 #nextButton {
   text-align: center;
   padding: 16px;
 }
-
 #nextButton a {
   display: inline-block;
-  padding: 11px 28px;
+  padding: 10px 20px;
   background: var(--primary);
   color: var(--white);
-  border-radius: 24px;
+  border-radius: 8px;
   font-size: 13px;
   font-weight: 700;
   text-decoration: none;
-  letter-spacing: 0.5px;
-  transition: background 0.2s;
 }
+#nextButton a:hover { background: var(--accent); color: var(--primary); }
 
-#nextButton a:hover {
-  background: var(--accent);
-  color: var(--primary);
-}
-
-/* =============================================
-   CHAT BUTTON
-   ============================================= */
-#chatButton {
-  position: fixed;
-  bottom: 80px;
-  right: 16px;
-  z-index: 9999;
-  background: var(--primary);
-  border-radius: 50%;
-  width: 54px;
-  height: 54px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.35);
-  border: 2px solid var(--accent);
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-
-#chatButton:hover { transform: scale(1.08); }
-
-#chatButton img {
-  width: 26px !important;
-  height: 26px !important;
-  display: block;
-  filter: brightness(0) invert(1);
-}
-
-/* =============================================
-   CHAT POPUP
-   ============================================= */
-#chatPopup {
-  display: none;
-  position: fixed;
-  bottom: 140px;
-  right: 16px;
-  width: 300px;
-  max-height: 380px;
-  background: var(--white);
-  border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
-  border: 1px solid var(--border);
-  z-index: 300;
-  overflow: hidden;
-  display: none;
-  flex-direction: column;
-}
-
-#chatHeader {
-  background: var(--primary);
-  color: var(--white);
-  padding: 12px 16px;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  border-bottom: 2px solid var(--accent);
-}
-
-#chatMessages {
-  flex: 1;
-  overflow-y: auto;
-  padding: 12px;
-  font-size: 13px;
-  min-height: 200px;
-  max-height: 260px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.message { padding: 8px 12px; border-radius: 12px; max-width: 85%; line-height: 1.4; }
-.user-message { background: var(--primary); color: var(--white); align-self: flex-end; }
-.bot-message  { background: var(--bg); color: var(--text); align-self: flex-start; border: 1px solid var(--border); }
-
-#chatInputContainer {
-  display: flex;
-  padding: 10px 12px;
-  gap: 8px;
-  border-top: 1px solid var(--border);
-}
-
-#chatInput {
-  flex: 1;
-  padding: 8px 12px;
-  border: 1.5px solid var(--border);
-  border-radius: 20px;
-  font-size: 13px;
-  outline: none;
-  font-family: inherit;
-}
-
-#chatInput:focus { border-color: var(--accent); }
-
-#sendBtn {
-  padding: 8px 16px;
-  background: var(--primary);
-  color: var(--white);
-  border: none;
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  font-family: inherit;
-  transition: background 0.2s;
-}
-
-#sendBtn:hover { background: var(--accent); color: var(--primary); }
-
-/* =============================================
-   FOOTER
-   ============================================= */
+/* FOOTER */
 .sticky-footer {
   position: fixed;
   bottom: 0;
@@ -583,10 +416,6 @@ body {
   box-shadow: 0 -2px 10px rgba(0,0,0,0.06);
 }
 
-.footer-container { width: 100%; }
-
-.footer-menu { width: 100%; }
-
 .footer-menu ul {
   list-style: none;
   display: flex;
@@ -594,14 +423,9 @@ body {
   align-items: center;
   padding: 0;
   margin: 0;
-  width: 100%;
 }
 
-.footer-menu ul li {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-}
+.footer-menu ul li { flex: 1; }
 
 .footer-menu ul li a {
   display: flex;
@@ -612,41 +436,59 @@ body {
   color: var(--text-light);
   font-size: 10px;
   padding: 8px 4px 6px;
-  gap: 4px;
+  gap: 3px;
   transition: color 0.2s;
-  width: 100%;
-  white-space: nowrap;
 }
 
-.footer-menu ul li a i {
-  font-size: 20px;
+/* Footer PNG icons */
+.footer-menu ul li a img {
+  width: 26px !important;
+  height: 26px !important;
+  object-fit: contain;
   display: block;
-  transition: color 0.2s;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+  /* Hapus vertical-align agar tidak menumpuk */
+  vertical-align: unset !important;
 }
 
 .footer-menu ul li a span {
   font-size: 10px;
+  display: block;
 }
 
-.footer-menu ul li a:hover,
-.footer-menu ul li.active a {
-  color: var(--primary);
-}
+.footer-menu ul li a:hover { color: var(--primary); }
+.footer-menu ul li a:hover img { opacity: 1; }
 
-/* =============================================
-   CONTENT
-   ============================================= */
+/* CHAT BUTTON */
+#chatButton {
+  position: fixed;
+  bottom: 80px;
+  right: 16px;
+  z-index: 99999;
+  background: var(--primary);
+  border-radius: 50%;
+  width: 54px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+  border: 2px solid var(--accent);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+#chatButton:hover { transform: scale(1.08); }
+
+/* CONTENT */
 .content { padding-bottom: 16px; }
 .sticky-elements { position: relative; }
 
-/* =============================================
-   RESPONSIVE
-   ============================================= */
+/* RESPONSIVE */
 @media (max-width: 360px) {
   .product-container { gap: 8px; }
   .header-container { padding: 8px 10px; }
-  .cosmetic-icon-item { min-width: 46px; font-size: 9px; }
-  #chatPopup { width: 260px; right: 10px; }
+  .cosmetic-icon-item { min-width: 46px; }
 }
 
 @media (min-width: 480px) {
