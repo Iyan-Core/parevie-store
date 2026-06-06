@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pareffi Store</title>
-  <link rel="stylesheet" href="./Css/index.css">
+  <link rel="stylesheet" href="./assets/Css/index.css">
   <link rel="stylesheet" href="./Css/El.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
@@ -12,118 +12,32 @@
 </head>
 <body>
 
-  <!-- Toast -->
-  <div id="_toast" style="position:fixed;bottom:80px;left:50%;transform:translateX(-50%);
-    background:#1a1a2e;color:#fff;padding:10px 24px;border-radius:20px;font-size:13px;
-    display:none;z-index:99999;white-space:nowrap;"></div>
+  <!-- Tombol Chat -->
+  <div id="chatButton" style="cursor:pointer;">
+    <img src="https://ik.imagekit.io/bn7fafwae/icon/chat.png" alt="Chat Icon" width="40" height="40" draggable="false">
+  </div>
 
-  <!-- Modal Detail Produk -->
-  <div id="productModal" style="display:none;position:fixed;inset:0;
-    background:rgba(0,0,0,0.6);z-index:9998;align-items:flex-end;justify-content:center;"
-    onclick="if(event.target===this)this.style.display='none'">
-    <div style="background:white;border-radius:20px 20px 0 0;width:100%;max-width:480px;
-      max-height:88vh;display:flex;flex-direction:column;animation:slideUp 0.3s ease;">
-      <div style="display:flex;align-items:center;justify-content:space-between;
-        padding:14px 20px;border-bottom:1px solid #f0ede8;flex-shrink:0;">
-        <span style="font-size:12px;font-weight:700;color:#888;letter-spacing:1.5px;text-transform:uppercase;">Detail Produk</span>
-        <button onclick="document.getElementById('productModal').style.display='none'"
-          style="background:#f7f5f0;border:1px solid #e0ddd6;width:32px;height:32px;
-          border-radius:50%;font-size:14px;cursor:pointer;color:#555;
-          display:flex;align-items:center;justify-content:center;">X</button>
-      </div>
-      <div id="modalBody" style="overflow-y:auto;padding:0 20px 28px;"></div>
+  <!-- Popup Chat -->
+  <div id="chatPopup">
+    <div id="chatHeader">Parevie Assistants</div>
+    <div id="chatMessages"></div>
+    <div id="chatInputContainer">
+      <input type="text" id="chatInput" placeholder="Tulis pesan...">
+      <button id="sendBtn">Kirim</button>
     </div>
   </div>
 
-  <style>
-    @keyframes slideUp {
-      from { transform: translateY(100%); }
-      to   { transform: translateY(0); }
-    }
-    /* HANYA fix cart & chat — tidak ubah yang lain */
-    #chatButton {
-      position: fixed !important;
-      bottom: 80px !important;
-      right: 16px !important;
-      z-index: 99999 !important;
-      background: #1a1a2e;
-      border-radius: 50%;
-      width: 54px;
-      height: 54px;
-      display: flex !important;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-      border: 2px solid #c9a84c;
-      cursor: pointer;
-    }
-    #chatButton img {
-      width: 26px !important;
-      height: 26px !important;
-      display: block !important;
-      filter: brightness(0) invert(1);
-    }
-    .cart-icon { position: relative; flex-shrink: 0; }
-    .cart-icon a {
-      display: flex;
-      align-items: center;
-      text-decoration: none;
-      position: relative;
-    }
-    .cart-icon img {
-      width: 30px !important;
-      height: 30px !important;
-      display: block !important;
-      filter: brightness(0) invert(1);
-    }
-    #cart-count {
-      position: absolute;
-      top: -6px;
-      right: -8px;
-      background: #e63946;
-      color: white;
-      font-size: 10px;
-      font-weight: 700;
-      min-width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0 3px;
-      z-index: 2;
-    }
-    /* Gender badge pojok kanan atas card */
-    .product-item { position: relative; }
-    .gender-badge {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      background: rgba(26,26,46,0.75);
-      color: white;
-      border-radius: 20px;
-      padding: 2px 8px;
-      font-size: 11px;
-      font-weight: 600;
-      z-index: 2;
-      backdrop-filter: blur(4px);
-    }
-    /* Rating */
-    .star-rating { color: #c9a84c; font-size: 11px; letter-spacing: 1px; }
-  </style>
-
-  <!-- Tombol Chat — PNG asli -->
-  <div id="chatButton" onclick="window.location.href='chat.html'">
-    <img src="./img/chat.png" alt="Chat">
-  </div>
+  <script src="./js/elara.js"></script>
 
   <div class="page-container">
+
+    <!-- HEADER -->
     <header class="sticky-header">
       <div class="header-container">
 
         <!-- Profil -->
         <div class="profile-icon" id="profileIconContainer">
-          <a href="./profile.html">
+          <a href="https://ik.imagekit.io/bn7fafwae/icon/avatar.png">
             <img id="profileImageHeader" src="./img/avatar.png" alt="Profil">
           </a>
           <span id="usernameDisplay">User</span>
@@ -133,15 +47,15 @@
         <div class="search-bar">
           <input type="text" placeholder="Cari..." id="searchInput">
           <button type="submit" id="searchButton">
-            <img src="./img/search.png" alt="search" width="16" height="16">
+            <img src="https://ik.imagekit.io/bn7fafwae/icon/search.png" alt="search" width="24" height="24">
           </button>
         </div>
 
-        <!-- Cart — PNG asli -->
-        <div class="cart-icon">
-          <a href="./cart.html">
-            <img src="./img/cart.png" alt="Cart">
-            <span id="cart-count">0</span>
+        <!--  -->
+        <div class="-icon">
+          <a href="./.html">
+            <img src="https://ik.imagekit.io/bn7fafwae/icon/cart.png" alt="cart" width="35" height="35">
+            <span id="-count"></span>
           </a>
         </div>
 
@@ -151,7 +65,7 @@
     <div class="content">
       <div class="sticky-elements">
 
-        <!-- Banner -->
+        <!-- Banner Promo -->
         <div class="ad-banner-container" id="adBannerContainer">
           <div class="ad-banner">
             <h2>Promo Spesial!</h2>
@@ -217,44 +131,48 @@
       <div class="product-wrapper">
         <h2 class="product-container-title">BEST SELLER</h2>
         <div class="product-container" id="productContainer">
-          <p style="text-align:center;padding:30px;color:#aaa;">Memuat produk...</p>
+          <!-- Loading state -->
+          <p style="text-align:center;padding:30px;color:#aaa;width:100%;">
+            Memuat produk...
+          </p>
         </div>
       </div>
 
+      <!-- Tombol ke Store -->
       <div id="nextButton">
-        <a href="./store.html">Selanjutnya</a>
+        <a href="./store.html">Lihat Semua Produk →</a>
       </div>
 
     </div>
   </div>
 
-  <!-- Footer — PNG asli seperti sebelumnya -->
+  <!-- Footer -->
   <footer class="sticky-footer">
     <div class="footer-container">
       <nav class="footer-menu">
         <ul>
           <li>
             <a href="index.html">
-              <img src="./img/home.png" alt="Beranda" width="28">
-              <span>Beranda</span>
+              <img src="https://ik.imagekit.io/bn7fafwae/icon/home.png" alt="Beranda" width="40" style="vertical-align:middle;">
+              Beranda
             </a>
           </li>
           <li>
             <a href="store.html">
-              <img src="./img/store.png" alt="Store" width="28">
-              <span>Store</span>
+              <img src="https://ik.imagekit.io/bn7fafwae/icon/store.png" alt="Store" width="40" style="vertical-align:middle;">
+              Store
             </a>
           </li>
           <li>
-            <a href="artikel.html">
-              <img src="./img/artikel.png" alt="Artikel" width="28">
-              <span>Artikel</span>
+            <a href="articles.html">
+              <img src="https://ik.imagekit.io/bn7fafwae/icon/article.png" alt="Artikel" width="40" style="vertical-align:middle;">
+              Artikel
             </a>
           </li>
           <li>
-            <a href="./profile.html">
-              <img src="./img/profile.png" alt="Profil" width="28">
-              <span>Profil</span>
+            <a href="./profil.html">
+              <img src="https://ik.imagekit.io/bn7fafwae/icon/profil.png" alt="profile" width="40" style="vertical-align:middle;">
+              Profil
             </a>
           </li>
         </ul>
@@ -262,22 +180,34 @@
     </div>
   </footer>
 
+  <!-- Service Worker -->
   <script>
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("service_worker.js");
     }
   </script>
 
+  <!-- FIREBASE -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
     import {
-      getFirestore, collection, query, where,
-      getDocs, doc, getDoc, setDoc, serverTimestamp
+      getAuth,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import {
+      getFirestore,
+      collection,
+      query,
+      where,
+      getDocs,
+      doc,
+      getDoc,
+      setDoc,
+      serverTimestamp
     } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
-      apiKey: "AIza...",
+      apiKey: "AIzaSyAIyMWMz4HXgBF3v9MkajbRgh05vXR1Wrg",
       authDomain: "pareffi-store.firebaseapp.com",
       projectId: "pareffi-store",
       storageBucket: "pareffi-store.firebasestorage.app",
@@ -290,229 +220,260 @@
     const db   = getFirestore(app);
 
     let currentUser = null;
-    let cart        = JSON.parse(localStorage.getItem('cart') || '[]');
-    let allProducts = [];
+    let         = JSON.parse(localStorage.getItem('') || '[]');
 
-    // CEK AUTH
+    // ==============================
+    // CEK AUTH — tampilkan nama & avatar
+    // ==============================
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         currentUser = user;
+
+        // Load data user dari Firestore
         try {
-          const snap = await getDoc(doc(db, "users", user.uid));
-          if (snap.exists()) {
-            const d = snap.data();
-            document.getElementById('usernameDisplay').textContent = d.nama || user.displayName || 'User';
-            if (d.photoURL) document.getElementById('profileImageHeader').src = d.photoURL;
+          const docSnap = await getDoc(doc(db, "users", user.uid));
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            document.getElementById('usernameDisplay').textContent =
+              data.nama || user.displayName || 'User';
+            if (data.photoURL) {
+              document.getElementById('profileImageHeader').src = data.photoURL;
+            }
           }
-        } catch(e) {}
-        try {
-          const cSnap = await getDoc(doc(db, "carts", user.uid));
-          if (cSnap.exists()) {
-            cart = cSnap.data().items || [];
-            localStorage.setItem('cart', JSON.stringify(cart));
-          }
-        } catch(e) {}
+        } catch (err) {
+          console.error('Gagal load user:', err);
+        }
+
+        // Load  dari Firestore
+        await loadFromFirestore(user.uid);
+
       } else {
+        // Belum login — tampilkan default
         document.getElementById('usernameDisplay').textContent = 'Login';
+        document.getElementById('profileImageHeader').src = './img/avatar.png';
+        updateCount();
       }
-      updateCartCount();
     });
 
-    function updateCartCount() {
-      document.getElementById('cart-count').textContent =
-        cart.reduce((s, i) => s + i.quantity, 0);
+    // ==============================
+    // LOAD  DARI FIRESTORE
+    // ==============================
+    async function loadFromFirestore(uid) {
+      try {
+        const docSnap = await getDoc(doc(db, "s", uid));
+        if (docSnap.exists()) {
+           = docSnap.data().items || [];
+          localStorage.setItem('', JSON.stringify());
+        }
+      } catch (err) {
+         = JSON.parse(localStorage.getItem('') || '[]');
+      }
+      updateCount();
     }
 
-    // LOAD BEST SELLER
+    function updateCount() {
+      const total = .reduce((sum, item) => sum + item.quantity, 0);
+      const el = document.getElementById('-count');
+      if (el) el.textContent = total;
+    }
+
+    // ==============================
+    // LOAD BEST SELLER DARI FIRESTORE
+    // ==============================
     async function loadBestSellers() {
       const container = document.getElementById('productContainer');
-      try {
-        let snap = await getDocs(query(collection(db, "products"), where("bestSeller", "==", true)));
-        if (snap.empty) snap = await getDocs(collection(db, "products"));
 
-        allProducts = [];
-        snap.forEach(d => allProducts.push({ id: d.id, ...d.data() }));
-        renderProducts(allProducts);
-      } catch(e) {
+      try {
+        const q        = query(collection(db, "products"), where("bestSeller", "==", true));
+        const snapshot = await getDocs(q);
+
+        if (snapshot.empty) {
+          // Fallback: ambil 6 produk pertama jika tidak ada bestSeller
+          const allSnap = await getDocs(collection(db, "products"));
+          const allProducts = [];
+          allSnap.forEach(d => allProducts.push({ id: d.id, ...d.data() }));
+          renderProducts(allProducts.slice(0, 6), container);
+          return;
+        }
+
+        const products = [];
+        snapshot.forEach(d => products.push({ id: d.id, ...d.data() }));
+        renderProducts(products, container);
+
+      } catch (err) {
         container.innerHTML = '<p style="text-align:center;color:#aaa;padding:30px;">Gagal memuat produk.</p>';
+        console.error('Error load best seller:', err);
       }
     }
 
-    // RENDER PRODUK — struktur card sama seperti aslinya
-    function renderProducts(products) {
-      const container = document.getElementById('productContainer');
+    function renderProducts(products, container) {
       container.innerHTML = '';
 
-      if (!products.length) {
+      if (products.length === 0) {
         container.innerHTML = '<p style="text-align:center;color:#aaa;padding:30px;">Belum ada produk.</p>';
         return;
       }
 
       products.forEach(p => {
-        const images = (p.images || []).filter(img => img && img.startsWith('http'));
-        const image  = images[0] || '';
-        const stars  = '★'.repeat(Math.round(p.rating || 0)) + '☆'.repeat(5 - Math.round(p.rating || 0));
+        const image = Array.isArray(p.images) ? p.images[0] : (p.image || '');
+        const genderIcon = p.gender === 'male'
+          ? `<img src="./img/man.png" alt="Male" class="cosmetic-icon" style="width:24px;height:24px;">`
+          : `<img src="./img/woman.png" alt="Female" class="cosmetic-icon" style="width:24px;height:24px;">`;
 
-        // Label gender
-        let genderLabel = '';
-        if (p.gender === 'male') genderLabel = '♂ Pria';
-        else if (p.gender === 'female') genderLabel = '♀ Wanita';
-        else if (p.gender) genderLabel = '⚥ Unisex';
-
-        const div = document.createElement('div');
-        div.classList.add('product-item');
-        div.innerHTML = `
-          ${genderLabel ? `<span class="gender-badge">${genderLabel}</span>` : ''}
-          <a href="#" onclick="showDetail('${p.id}');return false;">
+        const item = document.createElement('div');
+        item.className = 'product-item';
+        item.innerHTML = `
+          <a href="store.html?product=${encodeURIComponent(p.id)}">
             <p class="variant-title">${p.name}</p>
-            <img src="${image}" alt="${p.name}"
-              onerror="this.src='./img/no-image.png'"
-              style="${!image ? 'display:none' : ''}">
+            <img src="${image}" alt="${p.name}" onerror="this.src='./img/no-image.png'">
             <p>${p.name} ${p.size ? p.size + 'ml' : ''}</p>
             <hr>
             <p>Harga: Rp ${Number(p.price).toLocaleString('id-ID')}</p>
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:4px;">
-              <span class="star-rating">${stars}</span>
-              <span style="font-size:10px;color:#aaa;">Terjual ${p.sold || 0}</span>
-            </div>
+            ${genderIcon}
           </a>
-          <button class="add-to-cart-button"
-            data-id="${p.id}"
-            data-name="${p.name}"
-            data-price="${p.price}"
-            data-image="${image}">
+          <button class="add-to--button"
+            data-product-id="${p.id}"
+            data-product-name="${p.name}"
+            data-product-price="${p.price}"
+            data-product-image="${image}">
             Tambah ke Keranjang
           </button>
         `;
-        container.appendChild(div);
+        container.appendChild(item);
       });
 
-      container.querySelectorAll('.add-to-cart-button').forEach(btn => {
-        btn.addEventListener('click', () =>
-          addToCart(btn.dataset.id, btn.dataset.name, parseFloat(btn.dataset.price), btn.dataset.image)
-        );
+      // Bind tombol 
+      container.querySelectorAll('.add-to--button').forEach(btn => {
+        btn.addEventListener('click', () => addTo(
+          btn.dataset.productId,
+          btn.dataset.productName,
+          parseFloat(btn.dataset.productPrice),
+          btn.dataset.productImage
+        ));
       });
     }
 
-    // MODAL DETAIL
-    window.showDetail = function(id) {
-      const p = allProducts.find(x => x.id === id);
-      if (!p) return;
-      const images = (p.images || []).filter(img => img && img.startsWith('http'));
-      const image  = images[0] || '';
-      const stars  = '★'.repeat(Math.round(p.rating || 0)) + '☆'.repeat(5 - Math.round(p.rating || 0));
-
-      // Gender icon
-      let genderImg = '';
-      if (p.gender === 'male') genderImg = '<img src="./img/man.png" style="width:18px;height:18px;vertical-align:middle;margin-right:4px;">Pria';
-      else if (p.gender === 'female') genderImg = '<img src="./img/woman.png" style="width:18px;height:18px;vertical-align:middle;margin-right:4px;">Wanita';
-      else if (p.gender) genderImg = '<img src="./img/unisex.png" style="width:18px;height:18px;vertical-align:middle;margin-right:4px;">Unisex';
-
-      document.getElementById('modalBody').innerHTML = `
-        ${image ? `<img src="${image}" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:12px;margin:16px 0 12px;">` : '<div style="height:16px;"></div>'}
-        <div style="font-size:20px;font-weight:700;color:#1a1a2e;margin-bottom:4px;">${p.name}</div>
-        <div style="font-size:22px;font-weight:700;color:#c9a84c;margin-bottom:6px;">Rp ${Number(p.price).toLocaleString('id-ID')}</div>
-        <div style="color:#c9a84c;margin-bottom:14px;">${stars} <span style="color:#888;font-size:12px;">(${p.rating || 0}/5)</span></div>
-
-        <!-- Info Badges -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;">
-          <div style="padding:10px 12px;border-radius:12px;background:#f0f7ff;border:1px solid #cce3ff;">
-            <div style="font-size:10px;font-weight:700;color:#4a90e2;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:2px;">Ukuran</div>
-            <div style="font-size:14px;font-weight:600;color:#1a1a2e;">${p.size || '-'}ml</div>
-          </div>
-          <div style="padding:10px 12px;border-radius:12px;background:#fff5f0;border:1px solid #ffd4c2;">
-            <div style="font-size:10px;font-weight:700;color:#e07a2f;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:2px;">Aroma</div>
-            <div style="font-size:14px;font-weight:600;color:#1a1a2e;">${p.aroma || '-'}</div>
-          </div>
-          <div style="padding:10px 12px;border-radius:12px;background:#f0fff4;border:1px solid #b2f0c8;">
-            <div style="font-size:10px;font-weight:700;color:#27ae60;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:2px;">Kategori</div>
-            <div style="font-size:14px;font-weight:600;color:#1a1a2e;">${p.category || '-'}</div>
-          </div>
-          <div style="padding:10px 12px;border-radius:12px;background:#fdf5ff;border:1px solid #e2b8ff;">
-            <div style="font-size:10px;font-weight:700;color:#8e44ad;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:2px;">Gender</div>
-            <div style="font-size:13px;font-weight:600;color:#1a1a2e;display:flex;align-items:center;">${genderImg}</div>
-          </div>
-          <div style="padding:10px 12px;border-radius:12px;background:#fff9f0;border:1px solid #ffe0a0;">
-            <div style="font-size:10px;font-weight:700;color:#c9a84c;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:2px;">Terjual</div>
-            <div style="font-size:14px;font-weight:600;color:#1a1a2e;">${p.sold || 0} pcs</div>
-          </div>
-          <div style="padding:10px 12px;border-radius:12px;background:#f5f5f5;border:1px solid #ddd;">
-            <div style="font-size:10px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:2px;">Stok</div>
-            <div style="font-size:14px;font-weight:600;color:#1a1a2e;">${p.stock || 0} pcs</div>
-          </div>
-        </div>
-
-        <!-- Deskripsi -->
-        <div style="margin-bottom:20px;">
-          <div style="font-size:12px;font-weight:700;color:#888;text-transform:uppercase;
-            letter-spacing:1.5px;margin-bottom:8px;padding-bottom:6px;
-            border-bottom:2px solid #c9a84c;display:inline-block;">Deskripsi Produk</div>
-          <p style="font-size:14px;color:#444;line-height:1.7;margin-top:8px;">
-            ${p.desc || 'Tidak ada deskripsi produk.'}
-          </p>
-        </div>
-
-        <button onclick="addToCartFromModal('${p.id}','${p.name}',${p.price},'${image}')"
-          style="width:100%;padding:15px;background:#1a1a2e;color:white;border:none;
-          border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;
-          letter-spacing:0.5px;transition:background 0.2s;">
-          + Tambah ke Keranjang
-        </button>
-      `;
-      document.getElementById('productModal').style.display = 'flex';
-    };
-
-    window.addToCartFromModal = function(id, name, price, image) {
-      addToCart(id, name, price, image);
-      document.getElementById('productModal').style.display = 'none';
-    };
-
-    // ADD TO CART
-    async function addToCart(id, name, price, image) {
-      const existing = cart.find(i => i.id === id);
+    // ==============================
+    // ADD TO 
+    // ==============================
+    async function addTo(id, name, price, image) {
+      const existing = .find(item => item.id === id);
       if (existing) existing.quantity++;
-      else cart.push({ id, name, price, image, quantity: 1 });
-      localStorage.setItem('cart', JSON.stringify(cart));
-      updateCartCount();
+      else .push({ id, name, price, image, quantity: 1 });
+
+      localStorage.setItem('', JSON.stringify());
+      updateCount();
+
+      // Sync ke Firestore jika login
       if (currentUser) {
         try {
-          await setDoc(doc(db, "carts", currentUser.uid), { items: cart, updatedAt: serverTimestamp() });
-        } catch(e) {}
+          await setDoc(doc(db, "s", currentUser.uid), {
+            items: , updatedAt: serverTimestamp()
+          });
+        } catch (err) {
+          console.error('Gagal sync :', err);
+        }
       }
+
       showToast('✅ Ditambahkan ke keranjang');
     }
 
-    // SEARCH
-    document.getElementById('searchInput').addEventListener('input', function() {
-      const kw = this.value.toLowerCase();
-      renderProducts(allProducts.filter(p =>
-        p.name.toLowerCase().includes(kw) ||
-        (p.aroma || '').toLowerCase().includes(kw)
-      ));
-    });
-    document.getElementById('searchButton').addEventListener('click', e => {
-      e.preventDefault();
-      document.getElementById('searchInput').dispatchEvent(new Event('input'));
-    });
-
-    // AUTO SCROLL BANNER
-    let scrollPos = 0;
-    setInterval(() => {
-      const b = document.getElementById('adBannerContainer');
-      if (!b) return;
-      scrollPos += b.offsetWidth;
-      if (scrollPos >= b.scrollWidth) scrollPos = 0;
-      b.scrollTo({ left: scrollPos, behavior: 'smooth' });
-    }, 3000);
-
-    function showToast(msg) {
-      const t = document.getElementById('_toast');
-      t.textContent = msg;
-      t.style.display = 'block';
-      setTimeout(() => t.style.display = 'none', 2000);
+    // ==============================
+    // SEARCH (produk yang sudah dirender)
+    // ==============================
+    function performSearch() {
+      const keyword = document.getElementById('searchInput').value.toLowerCase();
+      document.querySelectorAll('#productContainer .product-item').forEach(item => {
+        const name = item.querySelector('.variant-title')?.textContent.toLowerCase() || '';
+        item.style.display = name.includes(keyword) ? 'block' : 'none';
+      });
     }
 
+    document.getElementById('searchInput')?.addEventListener('input', performSearch);
+    document.getElementById('searchButton')?.addEventListener('click', e => {
+      e.preventDefault(); performSearch();
+    });
+
+    // ==============================
+    // AUTO SCROLL BANNER
+    // ==============================
+    let scrollPos = 0;
+    setInterval(() => {
+      const banner = document.getElementById('adBannerContainer');
+      if (!banner) return;
+      scrollPos += banner.offsetWidth;
+      if (scrollPos >= banner.scrollWidth) scrollPos = 0;
+      banner.scrollTo({ left: scrollPos, behavior: 'smooth' });
+    }, 3000);
+
+    // ==============================
+    // CHAT POPUP
+    // ==============================
+    const chatButton = document.getElementById('chatButton');
+    const chatPopup  = document.getElementById('chatPopup');
+
+    chatButton?.addEventListener('click', () => {
+      chatPopup.style.display =
+        chatPopup.style.display === 'block' ? 'none' : 'block';
+    });
+
+    function sendMessage() {
+      const input   = document.getElementById('chatInput');
+      const message = input.value.trim();
+      if (!message) return;
+
+      const chatBox = document.getElementById('chatMessages');
+      chatBox.innerHTML += `<div class='message user-message'><b>Kamu:</b> ${message}</div>`;
+      input.value = '';
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      fetch('/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message })
+      })
+      .then(r => r.json())
+      .then(data => {
+        chatBox.innerHTML += `<div class='message bot-message'><b>Elara:</b> ${data.response}</div>`;
+        chatBox.scrollTop = chatBox.scrollHeight;
+      })
+      .catch(() => {
+        chatBox.innerHTML += `<div class='message bot-message'><b>Elara:</b> (Server tidak merespon)</div>`;
+        chatBox.scrollTop = chatBox.scrollHeight;
+      });
+    }
+
+    document.getElementById('sendBtn')?.addEventListener('click', sendMessage);
+    document.getElementById('chatInput')?.addEventListener('keydown', e => {
+      if (e.key === 'Enter') { e.preventDefault(); sendMessage(); }
+    });
+
+    // ==============================
+    // TOAST
+    // ==============================
+    function showToast(msg) {
+      let toast = document.getElementById('_toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = '_toast';
+        Object.assign(toast.style, {
+          position: 'fixed', bottom: '80px', left: '50%',
+          transform: 'translateX(-50%)', background: '#1a1a2e',
+          color: '#fff', padding: '10px 24px', borderRadius: '20px',
+          fontSize: '13px', zIndex: '999', display: 'none'
+        });
+        document.body.appendChild(toast);
+      }
+      toast.textContent = msg;
+      toast.style.display = 'block';
+      setTimeout(() => toast.style.display = 'none', 2000);
+    }
+
+    // ==============================
+    // MULAI
+    // ==============================
     loadBestSellers();
+
   </script>
 </body>
 </html>
