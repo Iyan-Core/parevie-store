@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pareffi Store</title>
-  <link rel="stylesheet" href="./assets/Css/index.css">
-  <link rel="stylesheet" href="./Css/El.css">
+  <link rel="stylesheet" href="./assets/css/index.css">
+  <link rel="stylesheet" href="./css/El.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -38,7 +38,7 @@
         <!-- Profil -->
         <div class="profile-icon" id="profileIconContainer">
           <a href="https://ik.imagekit.io/bn7fafwae/icon/avatar.png">
-            <img id="profileImageHeader" src="./img/avatar.png" alt="Profil">
+            <img id="profileImageHeader" src="https://ik.imagekit.io/bn7fafwae/icon/avatar.png" alt="Profil">
           </a>
           <span id="usernameDisplay">User</span>
         </div>
@@ -53,7 +53,7 @@
 
         <!--  -->
         <div class="-icon">
-          <a href="./.html">
+          <a href="./cart.html">
             <img src="https://ik.imagekit.io/bn7fafwae/icon/cart.png" alt="cart" width="35" height="35">
             <span id="-count"></span>
           </a>
@@ -207,7 +207,7 @@
     } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
-      apiKey: "AIzaSyAIyMWMz4HXgBF3v9MkajbRgh05vXR1Wrg",
+      apiKey: "AIzaSy.......",
       authDomain: "pareffi-store.firebaseapp.com",
       projectId: "pareffi-store",
       storageBucket: "pareffi-store.firebasestorage.app",
@@ -250,7 +250,7 @@
       } else {
         // Belum login — tampilkan default
         document.getElementById('usernameDisplay').textContent = 'Login';
-        document.getElementById('profileImageHeader').src = './img/avatar.png';
+        document.getElementById('profileImageHeader').src ='https://ik.imagekit.io/bn7fafwae/icon/avatar.png';
         updateCount();
       }
     });
@@ -317,8 +317,8 @@
       products.forEach(p => {
         const image = Array.isArray(p.images) ? p.images[0] : (p.image || '');
         const genderIcon = p.gender === 'male'
-          ? `<img src="./img/man.png" alt="Male" class="cosmetic-icon" style="width:24px;height:24px;">`
-          : `<img src="./img/woman.png" alt="Female" class="cosmetic-icon" style="width:24px;height:24px;">`;
+          ? `<img src="https://ik.imagekit.io/bn7fafwae/icon/man.png" alt="Male" class="cosmetic-icon" style="width:24px;height:24px;">`
+          : `<img src="https://ik.imagekit.io/bn7fafwae/icon/woman.png" alt="Female" class="cosmetic-icon" style="width:24px;height:24px;">`;
 
         const item = document.createElement('div');
         item.className = 'product-item';
