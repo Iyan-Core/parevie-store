@@ -1,0 +1,53 @@
+{
+  "name": "Pareffi Store",
+  "short_name": "Pareffi",
+  "description": "Pareffi — Parfum pilihan terbaik untuk kamu",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1a1a2e",
+  "theme_color": "#1a1a2e",
+  "lang": "id",
+  "icons": [
+    {
+      "src": "./img/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./img/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "./img/screenshot1.png",
+      "sizes": "360x780",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["shopping", "lifestyle"],
+  "shortcuts": [
+    {
+      "name": "Store",
+      "short_name": "Store",
+      "url": "./store.html",
+      "icons": [{ "src": "./img/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Keranjang",
+      "short_name": "Cart",
+      "url": "./cart.html",
+      "icons": [{ "src": "./img/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Artikel",
+      "short_name": "Artikel",
+      "url": "./artikel.html",
+      "icons": [{ "src": "./img/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
